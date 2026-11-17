@@ -103,6 +103,11 @@ public class MinecraftDownloader {
                         if (providedJsonFile.length() == 0 || vanillaJsonFile.exists() && vanillaJsonFile.length() == 0){
                             throw new RuntimeException("Minecraft "+versionMessage+ " is needed by " +realVersion); }
 
+                        if (providedJson.inheritsFrom != null) {
+                            mSourceJarFile = createGameJarPath(providedJson.inheritsFrom);
+                            mTargetJarFile = createGameJarPath(realVersion);
+                            if (mSourceJarFile.exists()) ensureJarFileCopy();
+                        }
                         listener.onDownloadDone();
                     } catch (Exception e) {
                         String tryagain = !isOnline ? "Please ensure you have an internet connection" : "Please try again on your Microsoft Account";

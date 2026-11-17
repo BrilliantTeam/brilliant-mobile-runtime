@@ -94,6 +94,20 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
     private AndroidPointerCapture mPointerCapture;
     private boolean mLastGrabState = false;
     public static boolean sdlEnabled = false;
+    private static boolean sdlPaused = false;
+
+    public static synchronized void pauseSdl() {
+        if (!sdlEnabled || sdlPaused) return;
+        sdlPaused = true;
+        SDLActivity.nativePause();
+    }
+
+    public static synchronized void resumeSdl(Surface surface) {
+        if (!sdlEnabled || !sdlPaused || surface == null || !surface.isValid()) return;
+        sdlPaused = false;
+        SDLActivity.nativeResume();
+    }
+
     boolean useSurfaceView = LauncherPreferences.PREF_USE_ALTERNATE_SURFACE;
 
     public MinecraftGLSurface(Context context) {
@@ -166,6 +180,7 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
                     // The first two args go unused, you can put any garbage in em.
                     if (sdlEnabled) SDLActivity.getSDLSurface().surfaceChanged(holder, format, Tools.currentDisplayMetrics.widthPixels, Tools.currentDisplayMetrics.heightPixels);
                     refreshSize();
+                    resumeSdl(mNativeSurface);
                 }
 
                 @Override
@@ -196,7 +211,11 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
                     setupSDL(getContext(), mNativeSurface, (ViewGroup) getParent());
                     if(isCalled) {
                         JREUtils.setupBridgeWindow(mNativeSurface);
-                        if (sdlEnabled) SDLSurface.setNativeSurface(mNativeSurface);
+                        if (sdlEnabled) {
+                            SDLSurface.setNativeSurface(mNativeSurface);
+                            SDLActivity.getSDLSurface().surfaceChanged(null, 0, Tools.currentDisplayMetrics.widthPixels, Tools.currentDisplayMetrics.heightPixels);
+                        }
+                        resumeSdl(mNativeSurface);
                         return;
                     }
                     isCalled = true;
@@ -210,6 +229,7 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
                     // The first two args go unused, you can put any garbage in em.
                     if (sdlEnabled) SDLActivity.getSDLSurface().surfaceChanged(null, 0, Tools.currentDisplayMetrics.widthPixels, Tools.currentDisplayMetrics.heightPixels);
                     refreshSize();
+                    resumeSdl(mNativeSurface);
                 }
 
                 @Override
@@ -489,7 +509,7 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
         }
 
         //Load Minecraft options:
-        MCOptionUtils.set("fullscreen", "off");
+        MCOptionUtils.set("fullscreen", "false");
         MCOptionUtils.set("overrideWidth", String.valueOf(windowWidth));
         MCOptionUtils.set("overrideHeight", String.valueOf(windowHeight));
         MCOptionUtils.save();

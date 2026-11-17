@@ -111,8 +111,7 @@ public class CallbackBridge {
         nativeSendCharMods(keychar,modifiers);
         nativeSendChar(keychar);
         if (!MinecraftGLSurface.sdlEnabled) return;
-        SDLActivity.onNativeKeyDown(EfficientAndroidLWJGLKeycode.getAndroidKeycode(keychar));
-        SDLActivity.onNativeKeyUp(EfficientAndroidLWJGLKeycode.getAndroidKeycode(keychar));
+        SDLActivity.commitText(String.valueOf(keychar));
     }
 
     public static void sendKeyPress(int keyCode, int modifiers, boolean status) {
@@ -228,6 +227,8 @@ public class CallbackBridge {
     public static final int ACTION_SEND_TEXTBOX_RECT = 1;
     public static final int ACTION_INIT_CONTROLLER = 2;
     public static final int ACTION_DEINIT_CONTROLLER = 3;
+    public static final int ACTION_START_TEXT_INPUT = 4;
+    public static final int ACTION_STOP_TEXT_INPUT = 5;
     /**
      * Used for any sort of notification that needs to be given from the JRE side
      * @return if notification successful
@@ -250,10 +251,10 @@ public class CallbackBridge {
                             // Notifies SDL of native surface res which is needed for proper input handling
                             SDLActivity.getSDLSurface().nativeResize(windowWidth, windowHeight);
                         }
-                        Logger.appendToLog("Amethyst-Android: SDL support enabled!");
+                        Logger.appendToLog("Brilliant: SDL support enabled!");
                         return true;
                     } catch (Exception e){
-                        Logger.appendToLog("Amethyst-Android: Failed to initialize SDL launcher-side integration! We will likely crash");
+                        Logger.appendToLog("Brilliant: Failed to initialize SDL launcher-side integration! We will likely crash");
                     }
                 }
                 if (action[0] == ACTION_SEND_TEXTBOX_RECT) {
@@ -266,6 +267,16 @@ public class CallbackBridge {
                 if (action[0] == ACTION_DEINIT_CONTROLLER) {
                     sdlControllerActive = false;
                     onDirectInputEnable();
+                }
+                if (action[0] == ACTION_START_TEXT_INPUT || action[0] == ACTION_STOP_TEXT_INPUT) {
+                    boolean show = action[0] == ACTION_START_TEXT_INPUT;
+                    net.kdt.pojavlaunch.Tools.runOnUiThread(() -> {
+                        net.kdt.pojavlaunch.customcontrols.keyboard.TouchCharInput input = net.kdt.pojavlaunch.MainActivity.touchCharInput;
+                        if (input == null) return;
+                        if (show) input.enable();
+                        else input.disable();
+                    });
+                    return true;
                 }
 
         }

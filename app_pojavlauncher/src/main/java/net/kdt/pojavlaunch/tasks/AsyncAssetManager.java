@@ -93,22 +93,24 @@ public class AsyncAssetManager {
         ProgressLayout.setProgress(ProgressLayout.EXTRACT_COMPONENTS, 0);
         sExecutorService.execute(() -> {
             try {
-                unpackComponent(ctx, "caciocavallo", false);
-                unpackComponent(ctx, "caciocavallo17", false);
-                // Since the Java module system doesn't allow multiple JARs to declare the same module,
-                // we repack them to a single file here
-                unpackLwjglNatives(ctx);
-                unpackComponent(ctx, "lwjgl3/3.3.3", false);
-                unpackComponent(ctx, "lwjgl3/3.4.1", false);
-                unpackComponent(ctx, "security", true);
-                unpackComponent(ctx, "arc_dns_injector", true);
-                unpackComponent(ctx, "MioLibPatcher", true);
-                unpackComponent(ctx, "forge_installer", true);
+                unpackComponentsNow(ctx);
             } catch (IOException e) {
                 Log.e("AsyncAssetManager", "Failed to unpack components !",e );
             }
             ProgressLayout.clearProgress(ProgressLayout.EXTRACT_COMPONENTS);
         });
+    }
+
+    public static synchronized void unpackComponentsNow(Context ctx) throws IOException {
+        unpackComponent(ctx, "caciocavallo", false);
+        unpackComponent(ctx, "caciocavallo17", false);
+        unpackLwjglNatives(ctx);
+        unpackComponent(ctx, "lwjgl3/3.3.3", false);
+        unpackComponent(ctx, "lwjgl3/3.4.1", false);
+        unpackComponent(ctx, "security", true);
+        unpackComponent(ctx, "arc_dns_injector", true);
+        unpackComponent(ctx, "MioLibPatcher", true);
+        unpackComponent(ctx, "forge_installer", true);
     }
     // Piggybacks off of the java modules extracting later to use their version files for update checks
     // This is indeed prone to breaking.

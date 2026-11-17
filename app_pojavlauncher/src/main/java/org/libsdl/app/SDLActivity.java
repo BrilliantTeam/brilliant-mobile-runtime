@@ -385,6 +385,10 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     public static boolean isUsingSDLTextEdit(){
         return mTextEdit != null;
     }
+
+    public static void commitText(String text) {
+        SDLInputConnection.nativeCommitText(text, 1);
+    }
     public static void enableSDLEditKeyboard(){
         if (mTextEdit == null) return;
 

@@ -114,7 +114,7 @@ import java.util.Map;
 public final class Tools {
     public  static final float BYTE_TO_MB = 1024 * 1024;
     public static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
-    public static String APP_NAME = "Amethyst";
+    public static String APP_NAME = "BrilliantLauncher";
 
     public static final Gson GLOBAL_GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -155,12 +155,10 @@ public final class Tools {
     public static String[] sAsmVersion = null;
 
 
+    public static final String GAME_FOLDER = "shared";
+
     private static File getPojavStorageRoot(Context ctx) {
-        if(SDK_INT >= 29) {
-            return ctx.getExternalFilesDir(null);
-        }else{
-            return new File(Environment.getExternalStorageDirectory(),"games/Amethyst");
-        }
+        return new File(ctx.getFilesDir(), "BrilliantLauncher");
     }
 
     /**
@@ -169,9 +167,8 @@ public final class Tools {
      * @return true if storage is fine, false if storage is not accessible
      */
     public static boolean checkStorageRoot(Context context) {
-        File externalFilesDir = DIR_GAME_HOME  == null ? Tools.getPojavStorageRoot(context) : new File(DIR_GAME_HOME);
-        //externalFilesDir == null when the storage is not mounted if it was obtained with the context call
-        return externalFilesDir != null && Environment.getExternalStorageState(externalFilesDir).equals(Environment.MEDIA_MOUNTED);
+        File root = Tools.getPojavStorageRoot(context);
+        return root.isDirectory() || root.mkdirs();
     }
 
     /**
@@ -212,7 +209,7 @@ public final class Tools {
     public static void initStorageConstants(Context ctx){
         initEarlyConstants(ctx);
         DIR_GAME_HOME = getPojavStorageRoot(ctx).getAbsolutePath();
-        DIR_GAME_NEW = DIR_GAME_HOME + "/.minecraft";
+        DIR_GAME_NEW = DIR_GAME_HOME + "/" + GAME_FOLDER;
         DIR_HOME_VERSION = DIR_GAME_NEW + "/versions";
         DIR_HOME_LIBRARY = DIR_GAME_NEW + "/libraries";
         DIR_HOME_CRASH = DIR_GAME_NEW + "/crash-reports";
@@ -416,7 +413,7 @@ public final class Tools {
             localeString = R.string.memory_warning_msg;
         }
 
-        if(LauncherPreferences.PREF_RAM_ALLOCATION > freeDeviceMemory) {
+        if(freeAddressSpace != -1 && LauncherPreferences.PREF_RAM_ALLOCATION > freeDeviceMemory) {
             int finalDeviceMemory = freeDeviceMemory;
             LifecycleAwareAlertDialog.DialogCreator dialogCreator = (dialog, builder) ->
                 builder.setMessage(activity.getString(localeString, finalDeviceMemory, LauncherPreferences.PREF_RAM_ALLOCATION))
@@ -638,14 +635,14 @@ public final class Tools {
             Log.i(TAG, "Legacy4J detected!");
             oldL4JMitigationLogListener = loggedLine -> {
                 if (loggedLine.contains("literal{SDL3 (isXander's libsdl4j)} isn't supported in this system. GLFW will be used instead.")) {
-                    Logger.appendToLog("Amethyst-Android: Broken version of Legacy4J (below 1.8.51.8.5.2537.1) detected! Force enabling SDL");
+                    Logger.appendToLog("Brilliant: Broken version of Legacy4J (below 1.8.51.8.5.2537.1) detected! Force enabling SDL");
                     Tools.SDL.initializeControllerSubsystems();
                     Tools.runOnUiThread(() -> {
                         Tools.dialog(activity, activity.getString(R.string.global_warning), activity.getString(R.string.oldL4JFound));
                     });
                     Logger.removeLogListener(oldL4JMitigationLogListener);
                 } else if (loggedLine.contains("Added SDL Controller Mappings")) {
-                    Logger.appendToLog("Amethyst-Android: Fixed version of Legacy4J (1.8.5.2537.1 or higher) detected! Have fun!");
+                    Logger.appendToLog("Brilliant: Fixed version of Legacy4J (1.8.5.2537.1 or higher) detected! Have fun!");
                     Logger.removeLogListener(oldL4JMitigationLogListener);
                 }
             };
@@ -1812,7 +1809,7 @@ public final class Tools {
         if(isDemo) {
             DIR_GAME_NEW = DIR_DATA + "/demo/.minecraft";
         } else {
-            DIR_GAME_NEW = DIR_GAME_HOME + "/.minecraft";
+            DIR_GAME_NEW = DIR_GAME_HOME + "/" + GAME_FOLDER;
         }
         DIR_HOME_VERSION = DIR_GAME_NEW + "/versions";
         DIR_HOME_LIBRARY = DIR_GAME_NEW + "/libraries";

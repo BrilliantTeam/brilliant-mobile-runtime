@@ -182,6 +182,7 @@ public class JREUtils {
         envMap.put("POJAV_NATIVEDIR", NATIVE_LIB_DIR);
         envMap.put("JAVA_HOME", jreHome);
         envMap.put("HOME", Tools.DIR_GAME_HOME);
+        envMap.put("BRILLIANT_LAUNCHER_HOME", Tools.DIR_GAME_HOME);
         envMap.put("TMPDIR", Tools.DIR_CACHE.getAbsolutePath());
         envMap.put("LIBGL_MIPMAP", "3");
 

@@ -12,6 +12,8 @@
 #define ACTION_SEND_TEXTBOX_RECT 1
 #define ACTION_INIT_CONTROLLER 2
 #define ACTION_DEINIT_CONTROLLER 3
+#define ACTION_START_TEXT_INPUT 4
+#define ACTION_STOP_TEXT_INPUT 5
 
 #define DECL_DLSYM(fn) typedef typeof(&fn) fn##_t;
 

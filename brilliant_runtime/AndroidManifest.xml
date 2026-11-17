@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="dev.alexytomi.androidnsbypass" />
+
+    <uses-feature android:glEsVersion="0x00020000" />
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name=".PojavApplication"
+        android:allowNativeHeapPointerTagging="false"
+        android:appCategory="game"
+        android:isGame="true">
+        <activity
+            android:name=".MissingStorageActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FatalErrorActivity"
+            android:taskAffinity="${applicationId}.game"
+            android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
+        <activity
+            android:name=".ShowErrorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
+        <activity
+            android:name=".ExitActivity"
+            android:taskAffinity="${applicationId}.game"
+            android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
+        <activity
+            android:name=".JavaGUILauncherActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
+            android:process=":gui_installer"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".CustomControlsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
+            android:label="@string/brilliant_game_label"
+            android:taskAffinity="${applicationId}.game"
+            android:launchMode="singleTop"
+            android:process=":game"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <service
+            android:name=".services.ProgressService"
+            android:foregroundServiceType="dataSync" />
+        <service
+            android:name=".services.GameService"
+            android:foregroundServiceType="specialUse"
+            android:process=":game">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="This application is intended to run a 3rd-party piece of software which cannot be managed using the activity's saved instance state. This service is used for background persistence of this piece of software." />
+        </service>
+    </application>
+</manifest>

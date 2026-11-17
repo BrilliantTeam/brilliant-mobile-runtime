@@ -121,10 +121,30 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
     private QuickSettingSideDialog mQuickSettingSideDialog;
 
+    private static Thread sHeartbeat;
+
+    private static void startHeartbeat() {
+        if (sHeartbeat != null) return;
+        File record = new File(Tools.DIR_GAME_HOME, "running-mobile.json");
+        sHeartbeat = new Thread(() -> {
+            while (true) {
+                record.setLastModified(System.currentTimeMillis());
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }, "BrilliantHeartbeat");
+        sHeartbeat.setDaemon(true);
+        sHeartbeat.start();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        startHeartbeat();
 
         minecraftProfile = LauncherProfiles.getCurrentProfile();
         Tools.useANGLE = minecraftProfile.useANGLE;
@@ -136,6 +156,12 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         // Start the service a bit early
         ContextCompat.startForegroundService(this, gameServiceIntent);
         initLayout(R.layout.activity_basemain);
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                MainActivity.this.onBackPressed();
+            }
+        });
         CallbackBridge.addGrabListener(touchpad);
         CallbackBridge.addGrabListener(minecraftGLView);
 
@@ -224,7 +250,8 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         try {
-            File latestLogFile = new File(Tools.DIR_GAME_HOME, "latestlog.txt");
+            File latestLogFile = new File(Tools.getGameDirPath(minecraftProfile), "logs/launcher-runtime.txt");
+            net.kdt.pojavlaunch.utils.FileUtils.ensureParentDirectory(latestLogFile);
             if(!latestLogFile.exists() && !latestLogFile.createNewFile())
                 throw new IOException("Failed to create a new log file");
             Logger.begin(latestLogFile.getAbsolutePath());
@@ -349,6 +376,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         if(PREF_ENABLE_GYRO) mGyroControl.enable();
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_FOCUSED, 1);
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_HOVERED, 1);
+        if (minecraftGLView != null) MinecraftGLSurface.resumeSdl(minecraftGLView.mNativeSurface);
     }
 
     @Override
@@ -362,6 +390,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         }
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_FOCUSED, 0);
         CallbackBridge.nativeSetWindowAttrib(LwjglGlfwKeycode.GLFW_HOVERED, 0);
+        MinecraftGLSurface.pauseSdl();
 
         super.onPause();
     }
@@ -429,6 +458,15 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         }
     }
 
+    private static boolean usesSdl(String versionId, JMinecraftVersionList.Version version) {
+        String base = version.inheritsFrom != null ? version.inheritsFrom : versionId;
+        try {
+            return Tools.read(Tools.DIR_HOME_VERSION + "/" + base + "/" + base + ".json").contains("org.lwjgl:lwjgl-sdl");
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private void runCraft(String versionId, JMinecraftVersionList.Version version) throws Throwable {
         String assetVersion;
         try {
@@ -460,6 +498,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         if (Tools.LOCAL_RENDERER == null) Tools.LOCAL_RENDERER = "opengles_mobileglues";
         // Angelica IS the FPE emulator
         if (hasAngelica) Tools.useSFPEW = false;
+        if (usesSdl(versionId, version)) Tools.useSFPEW = false;
 
         // TODO: Detection for if a mod is present that can use system GLES as driver, set
         // Tools.LOCAL_RENDERER = "opengles_system_gles";
@@ -485,7 +524,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
         MinecraftAccount minecraftAccount = PojavProfile.getCurrentProfileContent(this, null);
         if (hasMods("sodium"))
-            Logger.appendToLog("WARNING: Sodium is being used, Amethyst-Android does NOT support this mod, you are on your own");
+            Logger.appendToLog("WARNING: Sodium is being used, Brilliant does NOT support this mod, you are on your own");
         Logger.appendToLog("--------- Starting game with Launcher Debug!");
         Tools.printLauncherInfo(versionId, Tools.isValidString(minecraftProfile.javaArgs) ? minecraftProfile.javaArgs : LauncherPreferences.PREF_CUSTOM_JAVA_ARGS, Tools.getTotalDeviceMemory(this));
         if(Tools.LOCAL_RENDERER.equals("opengles_mobileglues")) {
@@ -725,7 +764,13 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (isInEditor) {
+            mControlLayout.askToExit(this);
+        } else if (touchCharInput.isEnabled()) {
+            touchCharInput.disable();
+        } else {
+            sendKeyPress(LwjglGlfwKeycode.GLFW_KEY_ESCAPE);
+        }
     }
 
     @Override

@@ -41,6 +41,8 @@ static bool custom_SDL_InitSubSystem_Func(SDL_InitFlags flags) {
     // This is the normal for the launcher, the default in SDL is false.
     SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_SetHint);
     if (SDL_SetHint_p) SDL_SetHint_p("SDL_RETURN_KEY_HIDES_IME", "true");
+    if (SDL_SetHint_p) SDL_SetHint_p("SDL_ORIENTATIONS", "LandscapeLeft LandscapeRight");
+    if (SDL_SetHint_p) SDL_SetHint_p("SDL_ANDROID_BLOCK_ON_PAUSE", "0");
     // FIXME: MobileGlues has issues with passing in the proper EGL params to make this work
     const char *egl = getenv("POJAVEXEC_EGL");
     if (egl && strcmp(egl, "libmobileglues.so") == 0) {
@@ -51,7 +53,7 @@ static bool custom_SDL_InitSubSystem_Func(SDL_InitFlags flags) {
     bool r = BYTEHOOK_CALL_PREV(custom_SDL_InitSubSystem_Func, SDL_InitSubSystem_t, flags);
     if (!r){
         SET_DLSYM_PTR(dlopen("libSDL3.so", RTLD_NOLOAD), SDL_GetError);
-        LOGI("Amethyst-Android: SDL_InitSubsystem Error: %s", SDL_GetError_p());
+        LOGI("Brilliant: SDL_InitSubsystem Error: %s", SDL_GetError_p());
     }
     BYTEHOOK_POP_STACK();
     return r;
