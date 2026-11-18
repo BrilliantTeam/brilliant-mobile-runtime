@@ -42,13 +42,11 @@
             android:name=".JavaGUILauncherActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
             android:process=":gui_installer"
-            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".CustomControlsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
             android:exported="false"
-            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
@@ -57,7 +55,6 @@
             android:taskAffinity="${applicationId}.game"
             android:launchMode="singleTop"
             android:process=":game"
-            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustNothing" />
 
