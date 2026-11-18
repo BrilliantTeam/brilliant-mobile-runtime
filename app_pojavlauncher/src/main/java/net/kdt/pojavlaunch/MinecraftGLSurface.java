@@ -536,6 +536,12 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
         post(()->updateGrabState(isGrabbing));
     }
 
+    public void releaseInputs() {
+        mCurrentTouchProcessor.cancelPendingActions();
+        CallbackBridge.sendMouseButton(LwjglGlfwKeycode.GLFW_MOUSE_BUTTON_LEFT, false);
+        CallbackBridge.sendMouseButton(LwjglGlfwKeycode.GLFW_MOUSE_BUTTON_RIGHT, false);
+    }
+
     private TouchEventProcessor pickEventProcessor(boolean isGrabbing) {
         return isGrabbing ? mIngameProcessor : mInGUIProcessor;
     }

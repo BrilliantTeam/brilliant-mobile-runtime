@@ -45,6 +45,9 @@ public class InGameEventProcessor implements TouchEventProcessor {
                 if(LauncherPreferences.PREF_DISABLE_GESTURES) break;
                 checkGestures();
                 break;
+            case MotionEvent.ACTION_POINTER_UP:
+                cancelGestures(false);
+                break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mTracker.cancelTracking();

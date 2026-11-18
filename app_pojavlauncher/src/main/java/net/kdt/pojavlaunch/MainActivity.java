@@ -378,6 +378,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     @Override
     protected void onPause() {
         mGyroControl.disable();
+        if (minecraftGLView != null) minecraftGLView.releaseInputs();
         if (CallbackBridge.isGrabbing()){
             sendKeyPress(LwjglGlfwKeycode.GLFW_KEY_ESCAPE);
         }
