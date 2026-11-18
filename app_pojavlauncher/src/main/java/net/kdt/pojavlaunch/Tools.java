@@ -1684,8 +1684,29 @@ public final class Tools {
      * @param file the File to open
      * @param share whether to open a "Share" or an "Open" dialog.
      */
+    public static String storageAuthority(Context context) {
+        return context.getPackageName() + ".scoped.gamefolder";
+    }
+
     public static void openPath(Context context, File file, boolean share) {
-        Uri contentUri = DocumentsContract.buildDocumentUri(context.getString(R.string.storageProviderAuthorities), file.getAbsolutePath());
+        Uri contentUri = DocumentsContract.buildDocumentUri(storageAuthority(context), file.getAbsolutePath());
+        if (!share && file.isDirectory()) {
+            Intent folder = new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(contentUri, DocumentsContract.Document.MIME_TYPE_DIR)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            for (android.content.pm.ResolveInfo info : context.getPackageManager().queryIntentActivities(folder, 0)) {
+                if (info.activityInfo.packageName.contains("documentsui")) {
+                    folder.setPackage(info.activityInfo.packageName);
+                    break;
+                }
+            }
+            try {
+                context.startActivity(folder);
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(context, R.string.brilliant_open_folder_hint, Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
         String mimeType = getMimeType(file);
         Intent intent = new Intent();
         if(share) {

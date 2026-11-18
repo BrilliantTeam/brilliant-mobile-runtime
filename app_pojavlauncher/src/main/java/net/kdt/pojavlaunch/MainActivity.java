@@ -627,11 +627,10 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
                     String path = link.substring(truncLength);
                     Tools.openPath(ctx, new File(path), false);
                 }else {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse(link), "*/*");
-                    ctx.startActivity(intent);
+                    ctx.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             } catch (Throwable th) {
+                android.util.Log.e("BrilliantOpen", "openLink failed", th);
                 Tools.showError(ctx, th);
             }
         });

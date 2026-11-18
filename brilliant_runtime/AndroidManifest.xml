@@ -15,6 +15,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="vnd.android.document/directory" />
+        </intent>
+    </queries>
+
     <application
         android:name=".PojavApplication"
         android:allowNativeHeapPointerTagging="false"
@@ -40,11 +47,13 @@
             android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
         <activity
             android:name=".JavaGUILauncherActivity"
+            android:screenOrientation="sensorLandscape"
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|keyboard|navigation|uiMode"
             android:process=":gui_installer"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".CustomControlsActivity"
+            android:screenOrientation="sensorLandscape"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|navigation"
             android:exported="false"
             android:theme="@style/AppTheme" />
@@ -55,9 +64,20 @@
             android:taskAffinity="${applicationId}.game"
             android:launchMode="singleTop"
             android:process=":game"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustNothing" />
 
+        <provider
+            android:name=".scoped.FolderProvider"
+            android:authorities="${applicationId}.scoped.gamefolder"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
         <service
             android:name=".services.ProgressService"
             android:foregroundServiceType="dataSync" />

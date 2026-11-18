@@ -19,4 +19,5 @@
     <string name="brilliant_editor_saved">已儲存按鍵配置</string>
     <string name="brilliant_editor_new">新按鈕</string>
     <string name="brilliant_hold_hint">長按才會觸發這個按鍵</string>
+    <string name="brilliant_open_folder_hint">找不到可以開啟資料夾的 App。請打開系統的「檔案」App，在側邊選單找到「輝煌啟動器」。</string>
 </resources>

@@ -197,8 +197,20 @@ static bool proxy_stop_text(void *window) {
     return r;
 }
 
+static bool proxy_open_url(const char *url) {
+    if (url == NULL) return false;
+    TRY_ATTACH_ENV(dvm_env, pojav_environ->dalvikJavaVMPtr, "Open URL failed", return false;);
+    jstring link = (*dvm_env)->NewStringUTF(dvm_env, url);
+    (*dvm_env)->CallStaticObjectMethod(dvm_env, pojav_environ->bridgeClazz, pojav_environ->method_accessAndroidClipboard, CLIPBOARD_OPEN, link);
+    (*dvm_env)->DeleteLocalRef(dvm_env, link);
+    return true;
+}
+
 static void *sdl_window_proxy(const char *symbol, void *real) {
     if (real == NULL) return NULL;
+    if (strcmp(symbol, "SDL_OpenURL") == 0) {
+        return (void *) &proxy_open_url;
+    }
     if (strcmp(symbol, "SDL_StartTextInput") == 0) {
         real_start_text = (sdl_start_text_t) real;
         return (void *) &proxy_start_text;

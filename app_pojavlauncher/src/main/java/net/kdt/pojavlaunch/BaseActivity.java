@@ -1,7 +1,6 @@
 package net.kdt.pojavlaunch;
 
 import android.content.*;
-import android.content.pm.ActivityInfo;
 import android.os.*;
 import androidx.core.view.WindowCompat;
 import androidx.appcompat.app.*;
@@ -20,7 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        if (getResources().getConfiguration().smallestScreenWidthDp < 600) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         LocaleUtils.setLocale(this);
         Tools.setFullscreen(this, setFullscreen());
         Tools.updateWindowSize(this);

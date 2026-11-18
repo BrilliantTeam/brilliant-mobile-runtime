@@ -20,4 +20,5 @@
     <string name="brilliant_editor_saved">Controls saved</string>
     <string name="brilliant_editor_new">New</string>
     <string name="brilliant_hold_hint">Hold to use this button</string>
+    <string name="brilliant_open_folder_hint">No app can open folders. Open the system Files app and find Brilliant Launcher in the side menu.</string>
 </resources>

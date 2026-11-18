@@ -21,7 +21,6 @@ android {
         resValue 'string', 'app_short_name', 'Brilliant'
         resValue 'string', 'brilliant_game_label', '輝煌遊戲'
         resValue 'string', 'application_package', 'net.brilliantw.launcher'
-        resValue 'string', 'storageProviderAuthorities', 'net.brilliantw.launcher.scoped.gamefolder'
         resValue 'string', 'shareProviderAuthority', 'net.brilliantw.launcher.scoped.controlfolder'
         ndk {
             abiFilters 'arm64-v8a'
