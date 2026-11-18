@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="brilliant_editor_game">In game</string>
+    <string name="brilliant_editor_menu">In menus</string>
+    <string name="brilliant_editor_all">All</string>
+    <string name="brilliant_editor_hint">Tap a button to edit it, drag to move, drag its corner to resize</string>
+    <string name="brilliant_editor_add">Add</string>
+    <string name="brilliant_editor_add_button">Button</string>
+    <string name="brilliant_editor_add_drawer">Button group</string>
+    <string name="brilliant_editor_add_joystick">Joystick</string>
+    <string name="brilliant_editor_flip" translatable="false">⇅</string>
+    <string name="brilliant_editor_flip_label">Move toolbar to the other edge</string>
+    <string name="brilliant_editor_reset">Reset</string>
+    <string name="brilliant_editor_reset_confirm">Restore the default controls? Your custom layout will be deleted.</string>
+    <string name="brilliant_editor_cancel">Cancel</string>
+    <string name="brilliant_editor_discard">Discard your changes?</string>
+    <string name="brilliant_editor_discard_ok">Discard</string>
+    <string name="brilliant_editor_keep">Keep editing</string>
+    <string name="brilliant_editor_save">Save</string>
+    <string name="brilliant_editor_saved">Controls saved</string>
+    <string name="brilliant_editor_new">New</string>
+</resources>

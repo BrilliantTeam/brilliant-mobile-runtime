@@ -440,6 +440,28 @@ public class ControlLayout extends FrameLayout {
 	}
 
 
+	public String snapshot() {
+		return mLayout == null ? "" : Tools.GLOBAL_GSON.toJson(mLayout);
+	}
+
+	public void filterForEditor(boolean game, boolean menu) {
+		removeEditWindow();
+		for (ControlInterface button : getButtonChildren()) {
+			ControlData data = button instanceof ControlSubButton ? ((ControlSubButton) button).parentDrawer.getProperties() : button.getProperties();
+			button.getControlView().setVisibility((game && data.displayInGame) || (menu && data.displayInMenu) ? VISIBLE : GONE);
+		}
+	}
+
+	public void editNewest() {
+		List<ControlInterface> buttons = getButtonChildren();
+		if (buttons.isEmpty()) return;
+		ControlInterface newest = buttons.get(buttons.size() - 1);
+		post(() -> {
+			editControlButton(newest);
+			mActionRow.setFollowedButton(newest);
+		});
+	}
+
 	public boolean hasMenuButton() {
 		for(ControlInterface controlInterface : getButtonChildren()){
 			for (int keycode : controlInterface.getProperties().keycodes) {

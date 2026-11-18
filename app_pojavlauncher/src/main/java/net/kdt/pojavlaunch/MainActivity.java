@@ -54,9 +54,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.kdt.LoggerView;
 
 import net.kdt.pojavlaunch.customcontrols.ControlButtonMenuListener;
-import net.kdt.pojavlaunch.customcontrols.ControlData;
-import net.kdt.pojavlaunch.customcontrols.ControlDrawerData;
-import net.kdt.pojavlaunch.customcontrols.ControlJoystickData;
+import net.kdt.pojavlaunch.customcontrols.ControlEditorBar;
 import net.kdt.pojavlaunch.customcontrols.ControlLayout;
 import net.kdt.pojavlaunch.customcontrols.CustomControls;
 import net.kdt.pojavlaunch.customcontrols.EditorExitable;
@@ -90,6 +88,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     public static volatile ClipboardManager GLOBAL_CLIPBOARD;
     public static final String TAG = "MainActivity";
     public static final String INTENT_MINECRAFT_VERSION = "intent_version";
+    public static final String INTENT_QUICK_JOIN = "brilliant_join";
 
     volatile public static boolean isInputStackCall;
 
@@ -115,8 +114,6 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
     private ArrayAdapter<String> gameActionArrayAdapter;
     private AdapterView.OnItemClickListener gameActionClickListener;
-    public ArrayAdapter<String> ingameControlsEditorArrayAdapter;
-    public AdapterView.OnItemClickListener ingameControlsEditorListener;
     private GameService.LocalBinder mServiceBinder;
 
     private QuickSettingSideDialog mQuickSettingSideDialog;
@@ -182,19 +179,6 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             getWindow().setSustainedPerformanceMode(PREF_SUSTAINED_PERFORMANCE);
 
-        ingameControlsEditorArrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.menu_customcontrol));
-        ingameControlsEditorListener = (parent, view, position, id) -> {
-            switch(position) {
-                case 0: mControlLayout.addControlButton(new ControlData("New")); break;
-                case 1: mControlLayout.addDrawer(new ControlDrawerData()); break;
-                case 2: mControlLayout.addJoystickButton(new ControlJoystickData()); break;
-                case 3: mControlLayout.openLoadDialog(); break;
-                case 4: mControlLayout.openSaveDialog(this); break;
-                case 5: mControlLayout.openSetDefaultDialog(); break;
-                case 6: mControlLayout.openExitDialog(this);
-            }
-        };
 
         // Recompute the gui scale when options are changed
         MCOptionUtils.MCOptionListener optionListener = MCOptionUtils::getMcScale;
@@ -275,6 +259,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
             String version = getIntent().getStringExtra(INTENT_MINECRAFT_VERSION);
             version = version == null ? minecraftProfile.lastVersionId : version;
+            Tools.QUICK_JOIN = getIntent().getStringExtra(INTENT_QUICK_JOIN);
 
             JMinecraftVersionList.Version mVersionInfo = Tools.getVersionInfo(version);
             isInputStackCall = mVersionInfo.arguments != null;
@@ -551,13 +536,13 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     }
 
     boolean isInEditor;
+    private ControlEditorBar mEditorBar;
     private void openCustomControls() {
-        if(ingameControlsEditorListener == null || ingameControlsEditorArrayAdapter == null) return;
-
+        if (isInEditor) return;
         mControlLayout.setModifiable(true);
-        navDrawer.setAdapter(ingameControlsEditorArrayAdapter);
-        navDrawer.setOnItemClickListener(ingameControlsEditorListener);
-        mDrawerPullButton.setVisibility(View.VISIBLE);
+        mDrawerPullButton.setVisibility(View.GONE);
+        mEditorBar = new ControlEditorBar(this, mControlLayout, this);
+        mControlLayout.addView(mEditorBar, mEditorBar.placement());
         isInEditor = true;
     }
 
@@ -600,7 +585,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     public boolean dispatchKeyEvent(KeyEvent event) {
         if(isInEditor) {
             if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN) mControlLayout.askToExit(this);
+                if(event.getAction() == KeyEvent.ACTION_DOWN && mEditorBar != null) mEditorBar.requestCancel();
                 return true;
             }
             return super.dispatchKeyEvent(event);
@@ -695,6 +680,10 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
     @Override
     public void exitEditor() {
+        if (mEditorBar != null) {
+            mControlLayout.removeView(mEditorBar);
+            mEditorBar = null;
+        }
         try {
             mControlLayout.loadLayout((CustomControls)null);
             mControlLayout.setModifiable(false);
@@ -708,8 +697,6 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
             Tools.showError(this,e);
         }
 
-        navDrawer.setAdapter(gameActionArrayAdapter);
-        navDrawer.setOnItemClickListener(gameActionClickListener);
         isInEditor = false;
     }
 
@@ -765,7 +752,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     @Override
     public void onBackPressed() {
         if (isInEditor) {
-            mControlLayout.askToExit(this);
+            if (mEditorBar != null) mEditorBar.requestCancel();
         } else if (touchCharInput.isEnabled()) {
             touchCharInput.disable();
         } else {

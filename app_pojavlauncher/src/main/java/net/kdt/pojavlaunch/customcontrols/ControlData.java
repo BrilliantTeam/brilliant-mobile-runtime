@@ -78,6 +78,18 @@ public class ControlData {
         this(name, new int[]{});
     }
 
+    public static final int BRILLIANT_BG = 0xA6141619;
+    public static final int BRILLIANT_STROKE = 0x8CFFFFFF;
+
+    public static ControlData brilliantStyle(ControlData data) {
+        data.bgColor = BRILLIANT_BG;
+        data.strokeColor = BRILLIANT_STROKE;
+        data.strokeWidth = 1.5f;
+        data.cornerRadius = 30;
+        data.opacity = 1;
+        return data;
+    }
+
     public ControlData(String name, int[] keycodes) {
         this(name, keycodes, Tools.currentDisplayMetrics.widthPixels / 2f, Tools.currentDisplayMetrics.heightPixels / 2f);
     }

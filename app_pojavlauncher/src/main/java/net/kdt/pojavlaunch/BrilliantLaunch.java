@@ -12,6 +12,13 @@ import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
 public final class BrilliantLaunch {
+    public static final String CONTROLS = "brilliant-v4.json";
+    public static final String CUSTOM_CONTROLS = "my-controls.json";
+
+    public static java.io.File controlsFile() {
+        return new java.io.File(Tools.CTRLMAP_PATH, CONTROLS);
+    }
+
     public static final String PROFILE_KEY = java.util.UUID.nameUUIDFromBytes("brilliant".getBytes()).toString();
 
     public interface Callback {
@@ -45,7 +52,7 @@ public final class BrilliantLaunch {
     };
 
     public static void launch(Activity activity, String versionId, String gameDir, String username, String uuid,
-                              String accessToken, String xuid, int memoryMb, String language, String jvmArgs, Callback callback) {
+                              String accessToken, String xuid, int memoryMb, String language, String jvmArgs, String join, Callback callback) {
         new Thread(() -> {
             try {
                 prepare(activity, versionId, gameDir, username, uuid, accessToken, xuid, memoryMb, language, jvmArgs);
@@ -54,6 +61,7 @@ public final class BrilliantLaunch {
                     public void onDownloadDone() {
                         Intent intent = new Intent(activity, MainActivity.class);
                         intent.putExtra(MainActivity.INTENT_MINECRAFT_VERSION, versionId);
+                        intent.putExtra(MainActivity.INTENT_QUICK_JOIN, join);
                         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.runOnUiThread(() -> activity.startActivity(intent));
                         callback.onStarted();
@@ -73,6 +81,7 @@ public final class BrilliantLaunch {
     private static void prepare(Activity activity, String versionId, String gameDir, String username, String uuid,
                                 String accessToken, String xuid, int memoryMb, String language, String jvmArgs) throws Exception {
         if (!Tools.checkStorageRoot(activity)) throw new IllegalStateException("Game storage is not writable");
+        Tools.initStorageConstants(activity);
         LauncherPreferences.loadPreferences(activity);
         AsyncAssetManager.unpackComponentsNow(activity);
         writeControls(activity, language);
@@ -127,9 +136,16 @@ public final class BrilliantLaunch {
             }
             variants[column] = json;
         }
-        java.io.File target = new java.io.File(Tools.CTRLMAP_PATH, "brilliant-v3.json");
+        java.io.File target = controlsFile();
+        new java.io.File(Tools.CTRLMAP_PATH, "brilliant-v3.json").delete();
         String chosen = LauncherPreferences.DEFAULT_PREF.getString("defaultCtrl", Tools.CTRLDEF_FILE);
-        if (chosen.equals(Tools.CTRLDEF_FILE) || new java.io.File(chosen).getName().startsWith("brilliant")) {
+        java.io.File moved = new java.io.File(Tools.CTRLMAP_PATH, new java.io.File(chosen).getName());
+        if (!new java.io.File(chosen).isFile() && moved.isFile() && !moved.getName().startsWith("brilliant")) {
+            chosen = moved.getAbsolutePath();
+            LauncherPreferences.DEFAULT_PREF.edit().putString("defaultCtrl", chosen).commit();
+            LauncherPreferences.PREF_DEFAULTCTRL_PATH = chosen;
+        }
+        if (chosen.equals(Tools.CTRLDEF_FILE) || new java.io.File(chosen).getName().startsWith("brilliant") || !new java.io.File(chosen).isFile()) {
             LauncherPreferences.DEFAULT_PREF.edit().putString("defaultCtrl", target.getAbsolutePath()).commit();
             LauncherPreferences.PREF_DEFAULTCTRL_PATH = target.getAbsolutePath();
         }

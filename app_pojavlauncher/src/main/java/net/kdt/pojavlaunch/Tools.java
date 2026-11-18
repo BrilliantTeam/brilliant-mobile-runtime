@@ -124,6 +124,7 @@ public final class Tools {
     public static File DIR_CACHE;
     public static String MULTIRT_HOME;
     public static String LOCAL_RENDERER = null;
+    public static String QUICK_JOIN = null;
     public static int DEVICE_ARCHITECTURE;
     public static final String LAUNCHERPROFILES_RTPREFIX = "amethyst://";
 
@@ -158,6 +159,10 @@ public final class Tools {
     public static final String GAME_FOLDER = "shared";
 
     private static File getPojavStorageRoot(Context ctx) {
+        try {
+            File chosen = new File(read(new File(ctx.getFilesDir(), "data-location")).trim());
+            if (chosen.isAbsolute() && chosen.list() != null) return chosen;
+        } catch (Exception ignored) {}
         return new File(ctx.getFilesDir(), "BrilliantLauncher");
     }
 
@@ -846,6 +851,7 @@ public final class Tools {
                 versionInfo.minecraftArguments;
 
         if(profile.isDemo()) mcArguments += " --demo";
+        if(isValidString(QUICK_JOIN) && !mcArguments.contains("--quickPlay")) mcArguments += " --quickPlayMultiplayer " + QUICK_JOIN.trim();
 
         return JSONUtils.insertJSONValueList(splitAndFilterEmpty(mcArguments), varArgMap);
     }

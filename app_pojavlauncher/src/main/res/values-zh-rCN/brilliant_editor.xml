@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="brilliant_editor_game">游戏中</string>
+    <string name="brilliant_editor_menu">菜单中</string>
+    <string name="brilliant_editor_all">全部</string>
+    <string name="brilliant_editor_hint">点按钮编辑，拖动移动，拖动角落调整大小</string>
+    <string name="brilliant_editor_add">添加</string>
+    <string name="brilliant_editor_add_button">按钮</string>
+    <string name="brilliant_editor_add_drawer">按钮组</string>
+    <string name="brilliant_editor_add_joystick">摇杆</string>
+    <string name="brilliant_editor_flip_label">把工具栏移到另一边</string>
+    <string name="brilliant_editor_reset">恢复默认</string>
+    <string name="brilliant_editor_reset_confirm">要把所有按键恢复成默认配置吗？你自定义的配置会被删除。</string>
+    <string name="brilliant_editor_cancel">取消</string>
+    <string name="brilliant_editor_discard">要放弃这次的修改吗？</string>
+    <string name="brilliant_editor_discard_ok">放弃修改</string>
+    <string name="brilliant_editor_keep">继续编辑</string>
+    <string name="brilliant_editor_save">保存</string>
+    <string name="brilliant_editor_saved">已保存按键配置</string>
+    <string name="brilliant_editor_new">新按钮</string>
+</resources>
