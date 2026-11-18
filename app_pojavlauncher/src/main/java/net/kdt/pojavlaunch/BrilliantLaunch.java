@@ -149,7 +149,10 @@ public final class BrilliantLaunch {
             LauncherPreferences.DEFAULT_PREF.edit().putString("defaultCtrl", target.getAbsolutePath()).commit();
             LauncherPreferences.PREF_DEFAULTCTRL_PATH = target.getAbsolutePath();
         }
-        if (target.exists() && !java.util.Arrays.asList(variants).contains(Tools.read(target))) return;
+        if (target.exists()) {
+            String current = Tools.read(target);
+            if (current.contains("mControlDataList") && !java.util.Arrays.asList(variants).contains(current)) return;
+        }
         Tools.write(target.getAbsolutePath(), variants["zh-CN".equals(language) ? 2 : "en".equals(language) ? 0 : 1]);
     }
 
