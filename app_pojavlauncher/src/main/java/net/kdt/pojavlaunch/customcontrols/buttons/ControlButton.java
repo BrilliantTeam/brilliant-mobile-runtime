@@ -122,6 +122,8 @@ public class ControlButton extends TextView implements ControlInterface {
             case "keyboard": return R.drawable.brilliant_icon_keyboard;
             case "expand": return R.drawable.brilliant_icon_chevron_left;
             case "collapse": return R.drawable.brilliant_icon_chevron_right;
+            case "eye": return R.drawable.brilliant_icon_eye;
+            case "eye-closed": return R.drawable.brilliant_icon_eye_closed;
             default: return 0;
         }
     }
@@ -276,7 +278,10 @@ public class ControlButton extends TextView implements ControlInterface {
                 break;
 
             case ControlData.SPECIALBTN_TOGGLECTRL:
-                if(isDown)getControlLayoutParent().toggleControlVisible();
+                if(isDown) {
+                    getControlLayoutParent().toggleControlVisible();
+                    if ("eye".equals(mProperties.icon)) useIcon(getControlLayoutParent().areControlVisible() ? "eye" : "eye-closed");
+                }
                 break;
 
             case ControlData.SPECIALBTN_VIRTUALMOUSE:

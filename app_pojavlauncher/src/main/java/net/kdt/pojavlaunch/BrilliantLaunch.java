@@ -12,7 +12,7 @@ import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
 public final class BrilliantLaunch {
-    public static final String CONTROLS = "brilliant-v5.json";
+    public static final String CONTROLS = "brilliant-v6.json";
     public static final String CUSTOM_CONTROLS = "my-controls.json";
 
     public static java.io.File controlsFile() {
@@ -138,7 +138,7 @@ public final class BrilliantLaunch {
             variants[column] = json;
         }
         java.io.File target = controlsFile();
-        for (String old : new String[]{"brilliant-v3.json", "brilliant-v4.json"}) new java.io.File(Tools.CTRLMAP_PATH, old).delete();
+        for (String old : new String[]{"brilliant-v3.json", "brilliant-v4.json", "brilliant-v5.json"}) new java.io.File(Tools.CTRLMAP_PATH, old).delete();
         String chosen = LauncherPreferences.DEFAULT_PREF.getString("defaultCtrl", Tools.CTRLDEF_FILE);
         java.io.File moved = new java.io.File(Tools.CTRLMAP_PATH, new java.io.File(chosen).getName());
         if (!new java.io.File(chosen).isFile() && moved.isFile() && !moved.getName().startsWith("brilliant")) {

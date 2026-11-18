@@ -41,7 +41,7 @@ public class ControlEditorBar extends LinearLayout {
         mExit = exit;
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
-        setBackgroundColor(0xF2141619);
+        setBackgroundColor(0xF226282C);
         int pad = dp(6);
         setPadding(pad, pad, pad, pad);
         setTranslationZ(15);

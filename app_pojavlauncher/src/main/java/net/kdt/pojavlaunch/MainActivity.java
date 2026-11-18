@@ -33,6 +33,8 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -271,8 +273,17 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
 
 
             // Menu
-            gameActionArrayAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.menu_ingame));
+            final int[] menuIcons = {R.drawable.brilliant_icon_close, R.drawable.brilliant_icon_script_text, R.drawable.brilliant_icon_keyboard, R.drawable.brilliant_icon_sliders, R.drawable.brilliant_icon_gamepad};
+            gameActionArrayAdapter = new ArrayAdapter<String>(this,
+                    R.layout.brilliant_menu_item, getResources().getStringArray(R.array.menu_ingame)) {
+                @NonNull
+                @Override
+                public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                    TextView item = (TextView) super.getView(position, convertView, parent);
+                    item.setCompoundDrawablesRelativeWithIntrinsicBounds(position < menuIcons.length ? menuIcons[position] : 0, 0, 0, 0);
+                    return item;
+                }
+            };
             gameActionClickListener = (parent, view, position, id) -> {
                 switch(position) {
                     case 0: dialogForceClose(MainActivity.this); break;

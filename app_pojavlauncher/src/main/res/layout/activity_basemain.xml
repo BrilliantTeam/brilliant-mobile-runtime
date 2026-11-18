@@ -95,7 +95,9 @@
 		android:layout_width="200dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="right"
-		android:background="?attr/colorBackgroundFloating"
+		android:background="@drawable/brilliant_panel"
+		android:paddingTop="8dp"
+		android:divider="@null"
 		android:fitsSystemWindows="false"
 		android:id="@+id/main_navigation_view"/>
 
