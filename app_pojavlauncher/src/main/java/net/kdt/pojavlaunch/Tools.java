@@ -1246,6 +1246,7 @@ public final class Tools {
                 }
             }
 
+            if (libItem.name.startsWith("org.lwjgl")) continue;
             String libPath = Tools.DIR_HOME_LIBRARY + "/" + artifactToPath(libItem);
             if (!FileUtils.exists(libPath)) {
                 Log.d(APP_NAME, "Ignored non-exists file: " + libPath);

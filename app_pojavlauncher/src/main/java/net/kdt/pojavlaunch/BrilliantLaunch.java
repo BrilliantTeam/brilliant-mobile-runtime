@@ -79,6 +79,26 @@ public final class BrilliantLaunch {
         }, "BrilliantLaunch").start();
     }
 
+    public static void runInstaller(Activity activity, String versionId, String javaArgs, Callback callback) {
+        new Thread(() -> {
+            try {
+                if (!Tools.checkStorageRoot(activity)) throw new IllegalStateException("Game storage is not writable");
+                Tools.initStorageConstants(activity);
+                LauncherPreferences.loadPreferences(activity);
+                AsyncAssetManager.unpackComponentsNow(activity);
+                if (!NewJREUtil.installNewJreIfNeeded(activity, readVersion(versionId))) throw new IllegalStateException("Java runtime install failed");
+                Intent intent = new Intent(activity, JavaGUILauncherActivity.class)
+                        .putExtra("javaArgs", javaArgs)
+                        .putExtra("openLogOutput", true)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                activity.runOnUiThread(() -> activity.startActivity(intent));
+                callback.onStarted();
+            } catch (Throwable e) {
+                callback.onFailed(e);
+            }
+        }, "BrilliantInstaller").start();
+    }
+
     private static void prepare(Activity activity, String versionId, String gameDir, String username, String uuid,
                                 String accessToken, String xuid, int memoryMb, String language, String jvmArgs) throws Exception {
         if (!Tools.checkStorageRoot(activity)) throw new IllegalStateException("Game storage is not writable");
