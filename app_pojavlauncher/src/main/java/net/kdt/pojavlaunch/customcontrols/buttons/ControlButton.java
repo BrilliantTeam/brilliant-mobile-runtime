@@ -116,7 +116,7 @@ public class ControlButton extends TextView implements ControlInterface {
             case "inventory": return R.drawable.brilliant_icon_grid;
             case "drop": return R.drawable.brilliant_icon_download;
             case "close": return R.drawable.brilliant_icon_close;
-            case "mouse": return R.drawable.brilliant_icon_mouse;
+            case "mouse": return R.drawable.brilliant_icon_mouse_right;
             case "players": return R.drawable.brilliant_icon_users;
             case "camera": return R.drawable.brilliant_icon_camera;
             case "keyboard": return R.drawable.brilliant_icon_keyboard;
