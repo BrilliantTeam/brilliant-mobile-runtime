@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -15,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.content.res.AppCompatResources;
 
 import net.kdt.pojavlaunch.EfficientAndroidLWJGLKeycode;
 import net.kdt.pojavlaunch.LwjglGlfwKeycode;
@@ -36,6 +39,13 @@ public class ControlButton extends TextView implements ControlInterface {
 
     /* Cache value from the ControlData radius for drawing purposes */
     private float mComputedRadius;
+    private Drawable mIcon;
+    private boolean mHoldFired;
+    private static boolean sHoldHintShown;
+    private final Runnable mHoldPress = () -> {
+        mHoldFired = true;
+        sendKeyPresses(true);
+    };
 
     protected boolean mIsToggled = false;
     protected boolean mIsPointerOutOfBounds = false;
@@ -82,7 +92,38 @@ public class ControlButton extends TextView implements ControlInterface {
             mRectPaint.setAlpha(60);
         }
 
-        setText(properties.name);
+        useIcon(properties.icon);
+        setText(mIcon == null ? properties.name : "");
+        setContentDescription(properties.name.replace('\n', ' '));
+    }
+
+    protected void useIcon(String name) {
+        int icon = iconRes(name);
+        mIcon = icon == 0 ? null : AppCompatResources.getDrawable(getContext(), icon).mutate();
+        invalidate();
+    }
+
+    public static int iconRes(String name) {
+        if (name == null) return 0;
+        switch (name) {
+            case "menu": return R.drawable.brilliant_icon_menu;
+            case "more": return R.drawable.brilliant_icon_chevron_down;
+            case "chat": return R.drawable.brilliant_icon_chat;
+            case "pause": return R.drawable.brilliant_icon_pause;
+            case "jump": return R.drawable.brilliant_icon_arrow_up;
+            case "crouch": return R.drawable.brilliant_icon_arrow_down;
+            case "sprint": return R.drawable.brilliant_icon_zap;
+            case "inventory": return R.drawable.brilliant_icon_grid;
+            case "drop": return R.drawable.brilliant_icon_download;
+            case "close": return R.drawable.brilliant_icon_close;
+            case "mouse": return R.drawable.brilliant_icon_mouse;
+            case "players": return R.drawable.brilliant_icon_users;
+            case "camera": return R.drawable.brilliant_icon_camera;
+            case "keyboard": return R.drawable.brilliant_icon_keyboard;
+            case "expand": return R.drawable.brilliant_icon_chevron_left;
+            case "collapse": return R.drawable.brilliant_icon_chevron_right;
+            default: return 0;
+        }
     }
 
     @Override
@@ -90,6 +131,20 @@ public class ControlButton extends TextView implements ControlInterface {
         super.onDraw(canvas);
         if (mIsToggled || (!mProperties.isToggle && isActivated()))
             canvas.drawRoundRect(0, 0, getWidth(), getHeight(), mComputedRadius, mComputedRadius, mRectPaint);
+        if (mIcon != null) {
+            int size = Math.round(Math.min(getWidth(), getHeight()) * 0.5f);
+            int left = (getWidth() - size) / 2, top = (getHeight() - size) / 2, shadow = Math.max(1, Math.round(Tools.dpToPx(1)));
+            mIcon.setTint(0xCC000000);
+            boolean bare = Color.alpha(mProperties.bgColor) == 0 && mProperties.strokeWidth == 0;
+            int[][] offsets = bare ? new int[][]{{-shadow, 0}, {shadow, 0}, {0, -shadow}, {0, shadow * 2}} : new int[][]{{0, shadow}};
+            for (int[] offset : offsets) {
+                mIcon.setBounds(left + offset[0], top + offset[1], left + size + offset[0], top + size + offset[1]);
+                mIcon.draw(canvas);
+            }
+            mIcon.setBounds(left, top, left + size, top + size);
+            mIcon.setTint(Color.WHITE);
+            mIcon.draw(canvas);
+        }
     }
 
 
@@ -150,7 +205,10 @@ public class ControlButton extends TextView implements ControlInterface {
 
             case MotionEvent.ACTION_DOWN: // 0
             case MotionEvent.ACTION_POINTER_DOWN: // 5
-                if(!getProperties().isToggle){
+                if(getProperties().holdToPress){
+                    mHoldFired = false;
+                    postDelayed(mHoldPress, 350);
+                }else if(!getProperties().isToggle){
                     sendKeyPresses(true);
                 }
                 break;
@@ -165,6 +223,13 @@ public class ControlButton extends TextView implements ControlInterface {
                 if(mIsPointerOutOfBounds) getControlLayoutParent().onTouch(this, event);
                 mIsPointerOutOfBounds = false;
 
+                removeCallbacks(mHoldPress);
+                if(getProperties().holdToPress && !mHoldFired){
+                    if(!sHoldHintShown) Toast.makeText(getContext(), R.string.brilliant_hold_hint, Toast.LENGTH_SHORT).show();
+                    sHoldHintShown = true;
+                    break;
+                }
+                mHoldFired = false;
                 if(!triggerToggle()) {
                     sendKeyPresses(false);
                 }

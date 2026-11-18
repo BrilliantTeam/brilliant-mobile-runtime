@@ -339,6 +339,7 @@ public class EditControlSideDialog extends SideDialogView {
             if (internalChanges) return;
 
             mCurrentlyEditedButton.getProperties().name = s.toString();
+            mCurrentlyEditedButton.getProperties().icon = null;
 
             // Cheap and unoptimized, doesn't break the abstraction layer
             mCurrentlyEditedButton.setProperties(mCurrentlyEditedButton.getProperties(), false);

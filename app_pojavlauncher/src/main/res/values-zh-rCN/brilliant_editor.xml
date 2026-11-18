@@ -18,4 +18,5 @@
     <string name="brilliant_editor_save">保存</string>
     <string name="brilliant_editor_saved">已保存按键配置</string>
     <string name="brilliant_editor_new">新按钮</string>
+    <string name="brilliant_hold_hint">长按才会触发这个按键</string>
 </resources>

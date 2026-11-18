@@ -19,4 +19,5 @@
     <string name="brilliant_editor_save">Save</string>
     <string name="brilliant_editor_saved">Controls saved</string>
     <string name="brilliant_editor_new">New</string>
+    <string name="brilliant_hold_hint">Hold to use this button</string>
 </resources>

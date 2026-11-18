@@ -55,6 +55,7 @@ public class ControlDrawer extends ControlButton {
         for(ControlButton button : buttons){
             button.getControlView().setVisibility(visibility);
         }
+        if ("expand".equals(mProperties.icon)) useIcon(areButtonsVisible ? "collapse" : "expand");
     }
 
     //Syncing stuff
