@@ -46,28 +46,31 @@ public class CallbackBridge {
     public static boolean sGamepadDirectInput = false;
     public static boolean sdlControllerActive = false;
     private static int sMouseButtonState = 0;
+    private static float sSentX, sSentY;
 
     public static void putMouseEventWithCoords(int button, float x, float y) {
         putMouseEventWithCoords(button, true, x, y);
         sChoreographer.postFrameCallbackDelayed(l -> putMouseEventWithCoords(button, false, x, y), 33);
     }
-    
+
     public static void putMouseEventWithCoords(int button, boolean isDown, float x, float y /* , int dz, long nanos */) {
-        sendCursorPos(x, y);
+        if (!isGrabbing) sendCursorPos(x, y);
         sendMouseKeycode(button, CallbackBridge.getCurrentMods(), isDown);
     }
 
 
     public static void sendCursorPos(float x, float y) {
-        mouseX = x;
-        mouseY = y;
+        float dx = x - sSentX;
+        float dy = y - sSentY;
+        mouseX = sSentX = x;
+        mouseY = sSentY = y;
         nativeSendCursorPos(mouseX, mouseY);
         // HOVER_MOVE and MOVE are equivalent in SDL
         if (!MinecraftGLSurface.sdlEnabled) return;
         if (!isGrabbing)
             SDLActivity.onNativeMouse(0, MotionEvent.ACTION_MOVE, x, y, false);
-        else
-            SDLActivity.onNativeMouse(0, MotionEvent.ACTION_MOVE, deltaX, deltaY, true);
+        else if (dx != 0 || dy != 0)
+            SDLActivity.onNativeMouse(0, MotionEvent.ACTION_MOVE, dx, dy, true);
     }
 
     /**
@@ -172,7 +175,8 @@ public class CallbackBridge {
             } else {
                 sMouseButtonState &= ~aKey;
             }
-            SDLActivity.onNativeMouse(sMouseButtonState, isDown ? MotionEvent.ACTION_DOWN : MotionEvent.ACTION_UP, mouseX, mouseY, false);
+            boolean grabbed = isGrabbing;
+            SDLActivity.onNativeMouse(sMouseButtonState, isDown ? MotionEvent.ACTION_DOWN : MotionEvent.ACTION_UP, grabbed ? 0 : mouseX, grabbed ? 0 : mouseY, grabbed);
         }
     }
 
@@ -336,6 +340,10 @@ public class CallbackBridge {
     @SuppressWarnings("unused")
     @Keep
     private static void onGrabStateChanged(final boolean grabbing) {
+        if (isGrabbing != grabbing && windowWidth > 0 && windowHeight > 0) {
+            mouseX = sSentX = windowWidth / 2f;
+            mouseY = sSentY = windowHeight / 2f;
+        }
         isGrabbing = grabbing;
         sChoreographer.postFrameCallbackDelayed((time) -> {
             // If the grab re-changed, skip notify process
