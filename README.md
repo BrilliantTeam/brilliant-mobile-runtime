@@ -1,3 +1,29 @@
+# 輝煌啟動器 Android 執行層
+
+這是 [輝煌啟動器](https://www.brilliantw.net/launcher/) Android 版使用的遊戲執行層，改作自 [Angel Aura Amethyst](https://github.com/AngelAuraMC/Amethyst-Android)，依 LGPL-3.0 公開修改後的原始碼。輝煌啟動器本身（Tauri 介面）是另外的閉源程式，這個 repo 只提供 Minecraft 的執行環境。
+
+## 與 Amethyst 的主要差異
+
+- 新增 `brilliant_runtime` 模組，打包成 AAR 給輝煌啟動器呼叫：由啟動器指定版本、遊戲資料夾、帳號與直連分流後啟動遊戲，並可在 App 內執行 Forge／NeoForge 官方安裝程式
+- 觸控按鍵改為圖示樣式，新增「快捷動作」二級選單、長按觸發、獨立的隱藏按鍵開關，以及有情境分頁與明確儲存的按鍵編輯器
+- 遊戲內選單、確認視窗與按鍵面板改用輝煌啟動器的配色與圖示
+- 攔截 SDL3 的 `SDL_OpenURL`，讓 Minecraft 26.x 的「打開資料夾」與聊天網址能在 Android 開啟
+- 系統「檔案」App 可瀏覽實例資料夾（只公開實例，不含登入資料）
+- 資料位置可由啟動器指定；LWJGL 3.4.1 的 SDL 併入合併模組，並略過遊戲自帶的 LWJGL，讓 Forge 的模組系統能正常啟動
+- 修正多指觸控與切到背景時滑鼠鍵卡住的問題
+
+## 建置
+
+需要 JDK 21（Gradle）與 JDK 8（部分元件），以及 Android NDK 27.3.13750724：
+
+```
+./gradlew :brilliant_runtime:assembleRelease :androidnsbypass:assembleRelease -Porg.gradle.java.installations.paths=<JDK 8 路徑>
+```
+
+產出 `brilliant_runtime/build/outputs/aar/brilliant_runtime-release.aar`。以下為 Amethyst 原本的說明。
+
+---
+
 <h1 align="center">Angel Aura Amethyst</h1>
 
 <img src="https://github.com/AngelAuraMC/Amethyst-Android/blob/v3_openjdk/app_pojavlauncher/src/main/assets/amethyst.png" align="left" width="130" height="130" alt="Amethyst logo">
