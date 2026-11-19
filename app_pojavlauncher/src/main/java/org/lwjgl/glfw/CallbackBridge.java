@@ -97,6 +97,7 @@ public class CallbackBridge {
         if (!MinecraftGLSurface.sdlEnabled) return;
         if(isDown){
             SDLActivity.onNativeKeyDown(EfficientAndroidLWJGLKeycode.getAndroidKeycode(keycode));
+            if (keychar != 0 && !Character.isISOControl(keychar)) SDLActivity.commitText(String.valueOf(keychar));
         } else SDLActivity.onNativeKeyUp(EfficientAndroidLWJGLKeycode.getAndroidKeycode(keycode));
         // If not in GUI and pressed a hotbar key, update HotbarView's last index for gesture
         // detection. This is still faulty but should be less so.
