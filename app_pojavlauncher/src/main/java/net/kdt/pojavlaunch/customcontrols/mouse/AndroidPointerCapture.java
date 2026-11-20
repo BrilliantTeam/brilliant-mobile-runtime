@@ -85,6 +85,7 @@ public class AndroidPointerCapture implements ViewTreeObserver.OnWindowFocusChan
 
     @Override
     public boolean onCapturedPointer(View view, MotionEvent event) {
+        if(CallbackBridge.TRACE) android.util.Log.i("BrilliantInput", "android captured " + MotionEvent.actionToString(event.getAction()) + " source=0x" + Integer.toHexString(event.getSource()) + " buttons=0x" + Integer.toHexString(event.getButtonState()) + " rel=" + event.getAxisValue(MotionEvent.AXIS_RELATIVE_X) + "," + event.getAxisValue(MotionEvent.AXIS_RELATIVE_Y) + " xy=" + event.getX() + "," + event.getY());
         checkSameDevice(event.getDevice());
         int axisX, axisY;
         // Sources can claim to be a relative device by belonging to the trackball class, if so then

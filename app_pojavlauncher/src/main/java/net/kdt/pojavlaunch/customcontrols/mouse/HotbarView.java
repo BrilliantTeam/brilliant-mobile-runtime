@@ -92,8 +92,10 @@ public class HotbarView extends View implements MCOptionUtils.MCOptionListener, 
         int height;
         marginLayoutParams.width = mWidth = mcScale(180);
         marginLayoutParams.height = height = mcScale(20);
-        marginLayoutParams.leftMargin = (CallbackBridge.physicalWidth / 2) - (mWidth / 2);
-        marginLayoutParams.topMargin = CallbackBridge.physicalHeight - height;
+        int parentWidth = mParentView != null && mParentView.getWidth() > 0 ? mParentView.getWidth() : CallbackBridge.physicalWidth;
+        int parentHeight = mParentView != null && mParentView.getHeight() > 0 ? mParentView.getHeight() : CallbackBridge.physicalHeight;
+        marginLayoutParams.leftMargin = (parentWidth / 2) - (mWidth / 2);
+        marginLayoutParams.topMargin = parentHeight - height;
         setLayoutParams(marginLayoutParams);
     }
 

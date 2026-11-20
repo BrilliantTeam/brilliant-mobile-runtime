@@ -14,9 +14,9 @@ public class EfficientAndroidLWJGLKeycode {
     //This old version of this class was using an ArrayMap, a generic Key -> Value data structure.
     //The key being the android keycode from a KeyEvent
     //The value its LWJGL equivalent.
-    private static final int KEYCODE_COUNT = 106;
+    private static final int KEYCODE_COUNT = 112;
     private static final int[] sAndroidKeycodes = new int[KEYCODE_COUNT];
-    private static final int[] sLwjglKeycodesReversed = new int[LwjglGlfwKeycode.GLFW_KEY_LAST];
+    private static final int[] sLwjglKeycodesReversed = new int[LwjglGlfwKeycode.GLFW_KEY_LAST + 1];
     private static final short[] sLwjglKeycodes = new short[KEYCODE_COUNT];
     private static String[] androidKeyNameArray; /* = new String[androidKeycodes.length]; */
     private static int mTmpCount = 0;
@@ -108,18 +108,24 @@ public class EfficientAndroidLWJGLKeycode {
         add(KeyEvent.KEYCODE_AT, LwjglGlfwKeycode.GLFW_KEY_2);
 
         add(KeyEvent.KEYCODE_PLUS, LwjglGlfwKeycode.GLFW_KEY_KP_ADD);
+        add(KeyEvent.KEYCODE_MENU, LwjglGlfwKeycode.GLFW_KEY_MENU);
 
         // Page keys
         add(KeyEvent.KEYCODE_PAGE_UP, LwjglGlfwKeycode.GLFW_KEY_PAGE_UP); //92
         add(KeyEvent.KEYCODE_PAGE_DOWN, LwjglGlfwKeycode.GLFW_KEY_PAGE_DOWN);
 
         add(KeyEvent.KEYCODE_ESCAPE, LwjglGlfwKeycode.GLFW_KEY_ESCAPE);
+        add(KeyEvent.KEYCODE_FORWARD_DEL, LwjglGlfwKeycode.GLFW_KEY_DELETE);
 
         // Control keys
         add(KeyEvent.KEYCODE_CTRL_LEFT, LwjglGlfwKeycode.GLFW_KEY_LEFT_CONTROL);
         add(KeyEvent.KEYCODE_CTRL_RIGHT, LwjglGlfwKeycode.GLFW_KEY_RIGHT_CONTROL);
 
         add(KeyEvent.KEYCODE_CAPS_LOCK, LwjglGlfwKeycode.GLFW_KEY_CAPS_LOCK);
+        add(KeyEvent.KEYCODE_SCROLL_LOCK, LwjglGlfwKeycode.GLFW_KEY_SCROLL_LOCK);
+        add(KeyEvent.KEYCODE_META_LEFT, LwjglGlfwKeycode.GLFW_KEY_LEFT_SUPER);
+        add(KeyEvent.KEYCODE_META_RIGHT, LwjglGlfwKeycode.GLFW_KEY_RIGHT_SUPER);
+        add(KeyEvent.KEYCODE_SYSRQ, LwjglGlfwKeycode.GLFW_KEY_PRINT_SCREEN);
         add(KeyEvent.KEYCODE_BREAK, LwjglGlfwKeycode.GLFW_KEY_PAUSE);
         add(KeyEvent.KEYCODE_MOVE_HOME, LwjglGlfwKeycode.GLFW_KEY_HOME);
         add(KeyEvent.KEYCODE_MOVE_END, LwjglGlfwKeycode.GLFW_KEY_END);
@@ -186,7 +192,6 @@ public class EfficientAndroidLWJGLKeycode {
         CallbackBridge.holdingNumlock = keyEvent.isNumLockOn();
         CallbackBridge.holdingShift = keyEvent.isShiftPressed();
 
-        System.out.println(keyEvent.getKeyCode() + " " +keyEvent.getDisplayLabel());
         char key = (char)(keyEvent.getUnicodeChar() != 0 ? keyEvent.getUnicodeChar() : '\u0000');
         sendKeyPress(
                 getValueByIndex(valueIndex),
@@ -229,6 +234,8 @@ public class EfficientAndroidLWJGLKeycode {
     public static int getAndroidKeycode(int lwjglGlfwKeycode){
         if (lwjglGlfwKeycode == LwjglGlfwKeycode.GLFW_KEY_2) return KeyEvent.KEYCODE_2;
         if (lwjglGlfwKeycode == LwjglGlfwKeycode.GLFW_KEY_3) return KeyEvent.KEYCODE_3;
+        if (lwjglGlfwKeycode == LwjglGlfwKeycode.GLFW_KEY_COMMA) return KeyEvent.KEYCODE_COMMA;
+        if (lwjglGlfwKeycode == LwjglGlfwKeycode.GLFW_KEY_EQUAL) return KeyEvent.KEYCODE_EQUALS;
         return sAndroidKeycodes[sLwjglKeycodesReversed[lwjglGlfwKeycode]];
     }
 

@@ -18,6 +18,9 @@
 #include <string.h>
 #include <stdatomic.h>
 #include <math.h>
+#include <stdbool.h>
+#include <sys/system_properties.h>
+#include <android/log.h>
 
 #define TAG __FILE_NAME__
 #include "log.h"
@@ -242,6 +245,22 @@ Java_org_lwjgl_glfw_GLFW_glfwSetCursorPos(__attribute__((unused)) JNIEnv *env, _
 
 
 
+#define TRACE(...) __android_log_print(ANDROID_LOG_INFO, "BrilliantInput", __VA_ARGS__)
+
+bool brilliant_input_trace(void) {
+    static int enabled = -1;
+    if (enabled < 0) {
+        char value[PROP_VALUE_MAX] = {0};
+        __system_property_get("debug.brilliant.input", value);
+        enabled = value[0] == '1';
+    }
+    return enabled;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_lwjgl_glfw_CallbackBridge_nativeInputTrace(__attribute__((unused)) JNIEnv* env, __attribute__((unused)) jclass clazz) {
+    return brilliant_input_trace();
+}
+
 void sendData(int type, int i1, int i2, int i3, int i4) {
     GLFWInputEvent *event = &pojav_environ->events[pojav_environ->inEventIndex];
     event->type = type;
@@ -308,6 +327,7 @@ JNIEXPORT jboolean JNICALL Java_org_lwjgl_glfw_CallbackBridge_nativeSetInputRead
 
 JNIEXPORT void JNICALL Java_org_lwjgl_glfw_CallbackBridge_nativeSetGrabbing(__attribute__((unused)) JNIEnv* env, __attribute__((unused)) jclass clazz, jboolean grabbing) {
     TRY_ATTACH_ENV(dvm_env, pojav_environ->dalvikJavaVMPtr, "nativeSetGrabbing failed!\n", return;);
+    if (brilliant_input_trace()) TRACE("grab %s", grabbing ? "on" : "off");
     (*dvm_env)->CallStaticVoidMethod(dvm_env, pojav_environ->bridgeClazz, pojav_environ->method_onGrabStateChanged, grabbing);
     pojav_environ->isGrabbing = grabbing;
 }
@@ -335,6 +355,7 @@ JNIEXPORT jboolean JNICALL Java_org_lwjgl_glfw_CallbackBridge_nativeNotifyLaunch
 
 jboolean critical_send_char(jchar codepoint) {
     if (pojav_environ->GLFW_invoke_Char && pojav_environ->isInputReady) {
+        if (brilliant_input_trace()) TRACE("glfw char U+%04X", codepoint);
         if (pojav_environ->isUseStackQueueCall) {
             sendData(EVENT_TYPE_CHAR, codepoint, 0, 0, 0);
         } else {
@@ -377,6 +398,7 @@ void critical_send_cursor_pos(jfloat x, jfloat y) {
     LOGD("Sending cursor position \n");
 #endif
     if (pojav_environ->GLFW_invoke_CursorPos && pojav_environ->isInputReady) {
+        if (brilliant_input_trace()) TRACE("glfw cursor x=%.1f y=%.1f", x, y);
 #ifdef DEBUG
         LOGD("pojav_environ->GLFW_invoke_CursorPos && pojav_environ->isInputReady \n");
 #endif
@@ -411,6 +433,7 @@ void noncritical_send_cursor_pos(__attribute__((unused)) JNIEnv* env, __attribut
      _a > _b ? _a : _b; })
 void critical_send_key(jint key, jint scancode, jint action, jint mods) {
     if (pojav_environ->GLFW_invoke_Key && pojav_environ->isInputReady) {
+        if (brilliant_input_trace()) TRACE("glfw key %s %d mods=0x%x", action ? "down" : "up", key, mods);
         pojav_environ->keyDownBuffer[max(0, key-31)] = (jbyte) action;
         if (pojav_environ->isUseStackQueueCall) {
             sendData(EVENT_TYPE_KEY, key, scancode, action, mods);
@@ -425,6 +448,7 @@ void noncritical_send_key(__attribute__((unused)) JNIEnv* env, __attribute__((un
 
 void critical_send_mouse_button(jint button, jint action, jint mods) {
     if (pojav_environ->GLFW_invoke_MouseButton && pojav_environ->isInputReady) {
+        if (brilliant_input_trace()) TRACE("glfw button %s %d", action ? "down" : "up", button);
         pojav_environ->mouseDownBuffer[max(0, button)] = (jbyte) action;
         if (pojav_environ->isUseStackQueueCall) {
             sendData(EVENT_TYPE_MOUSE_BUTTON, button, action, mods, 0);
@@ -458,6 +482,7 @@ void noncritical_send_screen_size(__attribute__((unused)) JNIEnv* env, __attribu
 
 void critical_send_scroll(jdouble xoffset, jdouble yoffset) {
     if (pojav_environ->GLFW_invoke_Scroll && pojav_environ->isInputReady) {
+        if (brilliant_input_trace()) TRACE("glfw wheel x=%.2f y=%.2f", xoffset, yoffset);
         if (pojav_environ->isUseStackQueueCall) {
             sendData(EVENT_TYPE_SCROLL, (int)xoffset, (int)yoffset, 0, 0);
         } else {

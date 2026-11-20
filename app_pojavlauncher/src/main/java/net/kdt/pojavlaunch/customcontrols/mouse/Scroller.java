@@ -20,7 +20,7 @@ public class Scroller {
         float hScroll = (dx / mScrollThreshold) + mScrollOvershootH;
         float vScroll = (dy / mScrollThreshold) + mScrollOvershootV;
         int hScrollRound = (int) hScroll, vScrollRound = (int) vScroll;
-        if(hScrollRound != 0 || vScrollRound != 0) CallbackBridge.sendScroll(hScroll, vScroll);
+        if(hScrollRound != 0 || vScrollRound != 0) CallbackBridge.sendScroll(hScrollRound, vScrollRound);
         mScrollOvershootH = hScroll - hScrollRound;
         mScrollOvershootV = vScroll - vScrollRound;
     }

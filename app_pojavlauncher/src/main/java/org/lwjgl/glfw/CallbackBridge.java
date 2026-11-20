@@ -41,6 +41,7 @@ public class CallbackBridge {
     public volatile static boolean holdingAlt, holdingCapslock, holdingCtrl,
             holdingNumlock, holdingShift;
 
+    public static final boolean TRACE;
     public static final ByteBuffer sGamepadButtonBuffer;
     public static final FloatBuffer sGamepadAxisBuffer;
     public static boolean sGamepadDirectInput = false;
@@ -102,8 +103,8 @@ public class CallbackBridge {
         // If not in GUI and pressed a hotbar key, update HotbarView's last index for gesture
         // detection. This is still faulty but should be less so.
         if (isGrabbing()){
-            if (keycode >= LwjglGlfwKeycode.GLFW_KEY_0 && keycode <= LwjglGlfwKeycode.GLFW_KEY_9){
-                ((MainActivity) SDLActivity.getContext()).setmLastIndex(keycode - LwjglGlfwKeycode.GLFW_KEY_0);
+            if (keycode >= LwjglGlfwKeycode.GLFW_KEY_1 && keycode <= LwjglGlfwKeycode.GLFW_KEY_9){
+                ((MainActivity) SDLActivity.getContext()).setmLastIndex(keycode - LwjglGlfwKeycode.GLFW_KEY_1);
             }
         }
     }
@@ -401,8 +402,10 @@ public class CallbackBridge {
     public static native void nativeSetWindowAttrib(int attrib, int value);
     private static native ByteBuffer nativeCreateGamepadButtonBuffer();
     private static native ByteBuffer nativeCreateGamepadAxisBuffer();
+    private static native boolean nativeInputTrace();
     static {
         System.loadLibrary("pojavexec");
+        TRACE = nativeInputTrace();
         sGamepadButtonBuffer = nativeCreateGamepadButtonBuffer();
         sGamepadAxisBuffer = createGamepadAxisBuffer();
     }

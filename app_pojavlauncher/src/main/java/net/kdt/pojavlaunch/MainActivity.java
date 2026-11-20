@@ -163,6 +163,14 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         });
         CallbackBridge.addGrabListener(touchpad);
         CallbackBridge.addGrabListener(minecraftGLView);
+        findViewById(R.id.dimension_tracker).addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (right - left == oldRight - oldLeft && bottom - top == oldBottom - oldTop) return;
+            v.post(() -> {
+                Tools.updateWindowSize(this);
+                mControlLayout.refreshControlButtonPositions();
+                mHotbarView.onResolutionChanged();
+            });
+        });
 
         if (Tools.hasTouchController(new File(gameDirPath)) || LauncherPreferences.PREF_FORCE_ENABLE_TOUCHCONTROLLER) {
             TouchControllerUtils.initialize(this, touchControllerInputView);

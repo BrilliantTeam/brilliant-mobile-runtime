@@ -109,9 +109,12 @@ public class TouchCharInput extends androidx.appcompat.widget.AppCompatEditText 
     public void disable(){
         if (SDLActivity.isUsingSDLTextEdit()) SDLActivity.disableSDLEditKeyboard();
         clear();
+        boolean hadFocus = hasFocus();
         setVisibility(GONE);
         clearFocus();
         setEnabled(false);
+        android.view.View surface = getRootView().findViewById(R.id.main_game_render_view);
+        if (surface != null && (hadFocus || getRootView().findFocus() == null)) surface.requestFocus();
         //setFocusable(false);
     }
 

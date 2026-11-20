@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <android/log.h>
+
+#define TRACE(...) __android_log_print(ANDROID_LOG_INFO, "BrilliantInput", __VA_ARGS__)
+extern bool brilliant_input_trace(void);
 // WARNING: Hooking dlopen and dlsym does not work for all devices, seems to be a conflict with
 // the turnip loader, perhaps Dobby would fare better.
 typedef void *(*dlopen_func_t)(const char *, int);
@@ -175,6 +179,7 @@ static sdl_start_text_props_t real_start_text_props;
 static sdl_stop_text_t real_stop_text;
 
 static void notify_text_input(int action) {
+    if (brilliant_input_trace()) TRACE("textinput %s", action == ACTION_START_TEXT_INPUT ? "start" : "stop");
     TRY_ATTACH_ENV(dvm_env, pojav_environ->dalvikJavaVMPtr, "Text input notify failed", return;);
     notifyLauncher(dvm_env, NOTIF_TYPE_SDL, (int[]){action}, 1);
 }
@@ -206,8 +211,83 @@ static bool proxy_open_url(const char *url) {
     return true;
 }
 
+#define AT(e, o, t) (*(const t *) ((const char *) (e) + (o)))
+
+static void trace_event(const void *e) {
+    uint32_t type = AT(e, 0, uint32_t);
+    switch (type) {
+        case 0x300:
+        case 0x301:
+            TRACE("key %s scancode=%u key=0x%x mod=0x%x%s", type == 0x300 ? "down" : "up", AT(e, 24, uint32_t), AT(e, 28, uint32_t), AT(e, 32, uint16_t), AT(e, 37, uint8_t) ? " repeat" : "");
+            break;
+        case 0x302:
+        case 0x303: {
+            const char *text = AT(e, 24, const char *);
+            TRACE("%s \"%s\"", type == 0x303 ? "text" : "edit", text ? text : "");
+            break;
+        }
+        case 0x400:
+            TRACE("motion x=%.1f y=%.1f rel=%.1f,%.1f buttons=0x%x", AT(e, 28, float), AT(e, 32, float), AT(e, 36, float), AT(e, 40, float), AT(e, 24, uint32_t));
+            break;
+        case 0x401:
+        case 0x402:
+            TRACE("button %s %u x=%.1f y=%.1f", type == 0x401 ? "down" : "up", AT(e, 24, uint8_t), AT(e, 28, float), AT(e, 32, float));
+            break;
+        case 0x403:
+            TRACE("wheel x=%.2f y=%.2f", AT(e, 24, float), AT(e, 28, float));
+            break;
+        case 0x650:
+            TRACE("pad axis %u %d", AT(e, 20, uint8_t), AT(e, 24, int16_t));
+            break;
+        case 0x651:
+        case 0x652:
+            TRACE("pad %s %u", type == 0x651 ? "down" : "up", AT(e, 20, uint8_t));
+            break;
+        default:
+            if ((type >= 0x200 && type < 0x300) || (type >= 0x700 && type < 0x800)) TRACE("event 0x%x", type);
+    }
+}
+
+typedef bool (*sdl_poll_event_t)(void *);
+typedef bool (*sdl_relative_mode_t)(void *, bool);
+typedef void (*sdl_warp_mouse_t)(void *, float, float);
+
+static sdl_poll_event_t real_poll_event;
+static sdl_relative_mode_t real_relative_mode;
+static sdl_warp_mouse_t real_warp_mouse;
+
+static bool proxy_poll_event(void *event) {
+    bool r = real_poll_event(event);
+    if (r && event != NULL) trace_event(event);
+    return r;
+}
+
+static bool proxy_relative_mode(void *window, bool enabled) {
+    TRACE("relative %s", enabled ? "on" : "off");
+    return real_relative_mode(window, enabled);
+}
+
+static void proxy_warp_mouse(void *window, float x, float y) {
+    TRACE("warp x=%.1f y=%.1f", x, y);
+    real_warp_mouse(window, x, y);
+}
+
 static void *sdl_window_proxy(const char *symbol, void *real) {
     if (real == NULL) return NULL;
+    if (brilliant_input_trace()) {
+        if (strcmp(symbol, "SDL_PollEvent") == 0) {
+            real_poll_event = (sdl_poll_event_t) real;
+            return (void *) &proxy_poll_event;
+        }
+        if (strcmp(symbol, "SDL_SetWindowRelativeMouseMode") == 0) {
+            real_relative_mode = (sdl_relative_mode_t) real;
+            return (void *) &proxy_relative_mode;
+        }
+        if (strcmp(symbol, "SDL_WarpMouseInWindow") == 0) {
+            real_warp_mouse = (sdl_warp_mouse_t) real;
+            return (void *) &proxy_warp_mouse;
+        }
+    }
     if (strcmp(symbol, "SDL_OpenURL") == 0) {
         return (void *) &proxy_open_url;
     }

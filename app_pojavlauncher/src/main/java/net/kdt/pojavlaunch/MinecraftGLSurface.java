@@ -93,6 +93,8 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
     private TouchEventProcessor mCurrentTouchProcessor = mInGUIProcessor;
     private AndroidPointerCapture mPointerCapture;
     private boolean mLastGrabState = false;
+    private final android.util.SparseLongArray mEarlyKeyUps = new android.util.SparseLongArray();
+    private final android.util.SparseBooleanArray mKeysDown = new android.util.SparseBooleanArray();
     public static boolean sdlEnabled = false;
     private static boolean sdlPaused = false;
 
@@ -117,6 +119,7 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
     public MinecraftGLSurface(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         setFocusable(true);
+        setFocusableInTouchMode(true);
         CallbackBridge.setDirectGamepadEnableHandler(this);
     }
 
@@ -307,6 +310,7 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
     @SuppressLint("NewApi")
     @Override
     public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        if(CallbackBridge.TRACE) Log.i("BrilliantInput", "android generic " + MotionEvent.actionToString(event.getAction()) + " source=0x" + Integer.toHexString(event.getSource()) + " tool=" + event.getToolType(0) + " buttons=0x" + Integer.toHexString(event.getButtonState()) + " x=" + event.getX() + " y=" + event.getY());
         if(sdlEnabled && Gamepad.isGamepadEvent(event)) {
             final MotionEvent copy = MotionEvent.obtain(event);
             PojavApplication.sExecutorService.execute(()->{
@@ -357,8 +361,15 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
         }
     }
 
+    @Override
+    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+        if(keyCode != KeyEvent.KEYCODE_BACK && (event.getFlags() & KeyEvent.FLAG_SOFT_KEYBOARD) == 0 && processKeyEvent(event)) return true;
+        return super.onKeyPreIme(keyCode, event);
+    }
+
     /** The event for keyboard/ gamepad button inputs */
     public boolean processKeyEvent(KeyEvent event) {
+        if(CallbackBridge.TRACE) android.util.Log.i("BrilliantInput", "android key " + (event.getAction() == KeyEvent.ACTION_DOWN ? "down " : "up ") + KeyEvent.keyCodeToString(event.getKeyCode()) + " source=0x" + Integer.toHexString(event.getSource()) + " flags=0x" + Integer.toHexString(event.getFlags()) + " repeat=" + event.getRepeatCount() + " device=" + event.getDeviceId());
         //Log.i("KeyEvent", event.toString());
 
         //Filtering useless events by order of probability
@@ -416,7 +427,17 @@ public class MinecraftGLSurface extends View implements GrabListener, DirectGame
 
         int index = EfficientAndroidLWJGLKeycode.getIndexByKey(eventKeycode);
         if(EfficientAndroidLWJGLKeycode.containsIndex(index)) {
+            if(action == KeyEvent.ACTION_UP && !mKeysDown.get(eventKeycode)) {
+                mEarlyKeyUps.put(eventKeycode, event.getDownTime());
+                return true;
+            }
+            mKeysDown.put(eventKeycode, action == KeyEvent.ACTION_DOWN);
             EfficientAndroidLWJGLKeycode.execKey(event, index);
+            if(action == KeyEvent.ACTION_DOWN && mEarlyKeyUps.get(eventKeycode, -1) == event.getDownTime()) {
+                mEarlyKeyUps.delete(eventKeycode);
+                mKeysDown.put(eventKeycode, false);
+                EfficientAndroidLWJGLKeycode.execKey(KeyEvent.changeAction(event, KeyEvent.ACTION_UP), index);
+            }
             return true;
         }
 
