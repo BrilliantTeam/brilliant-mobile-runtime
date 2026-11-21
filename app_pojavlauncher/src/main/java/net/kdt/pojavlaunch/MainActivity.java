@@ -40,7 +40,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -551,7 +550,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     private void dialogSendCustomKey() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(R.string.control_customkey);
-        dialog.setItems(EfficientAndroidLWJGLKeycode.generateKeyName(), (dInterface, position) -> EfficientAndroidLWJGLKeycode.execKeyIndex(position));
+        dialog.setAdapter(new ArrayAdapter<>(this, R.layout.brilliant_menu_item, EfficientAndroidLWJGLKeycode.generateKeyName(this)), (dInterface, position) -> EfficientAndroidLWJGLKeycode.execKeyIndex(position));
         dialog.show();
     }
 
@@ -596,13 +595,12 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     public static void toggleMouse(Context ctx) {
         if (CallbackBridge.isGrabbing()) return;
 
-        Toast.makeText(ctx, touchpad.switchState()
-                        ? R.string.control_mouseon : R.string.control_mouseoff,
-                Toast.LENGTH_SHORT).show();
+        BrilliantToast.show(ctx, touchpad.switchState() ? R.string.control_mouseon : R.string.control_mouseoff);
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK && closeTopLayer(event.getAction() == KeyEvent.ACTION_UP)) return true;
         if(isInEditor) {
             if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 if(event.getAction() == KeyEvent.ACTION_DOWN && mEditorBar != null) mEditorBar.requestCancel();
@@ -768,8 +766,32 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         super.onTrimMemory(level);
     }
 
+    private boolean closeTopLayer(boolean close) {
+        if (drawerLayout != null && navDrawer != null && drawerLayout.isDrawerOpen(navDrawer)) {
+            if (close) drawerLayout.closeDrawers();
+            return true;
+        }
+        if (mQuickSettingSideDialog != null && mQuickSettingSideDialog.isDisplaying()) {
+            if (close) mQuickSettingSideDialog.cancel();
+            return true;
+        }
+        if (loggerView != null && loggerView.getVisibility() == View.VISIBLE) {
+            if (close) loggerView.setVisibility(View.GONE);
+            return true;
+        }
+        if (isInEditor) {
+            if (mEditorBar != null && mEditorBar.closePopup(close)) return true;
+            if (mControlLayout.hasEditLayer()) {
+                if (close) mControlLayout.closeEditLayer();
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onBackPressed() {
+        if (closeTopLayer(true)) return;
         if (isInEditor) {
             if (mEditorBar != null) mEditorBar.requestCancel();
         } else if (touchCharInput.isEnabled()) {

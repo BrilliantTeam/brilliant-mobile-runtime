@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -226,7 +225,7 @@ public class ControlButton extends TextView implements ControlInterface {
 
                 removeCallbacks(mHoldPress);
                 if(getProperties().holdToPress && !mHoldFired){
-                    if(!sHoldHintShown) Toast.makeText(getContext(), R.string.brilliant_hold_hint, Toast.LENGTH_SHORT).show();
+                    if(!sHoldHintShown) net.kdt.pojavlaunch.BrilliantToast.show(getContext(), R.string.brilliant_hold_hint);
                     sHoldHintShown = true;
                     break;
                 }
@@ -319,7 +318,7 @@ public class ControlButton extends TextView implements ControlInterface {
                 break;
 
             default:
-                Toast.makeText(getContext(), R.string.error_key_unsupported, Toast.LENGTH_LONG).show();
+                net.kdt.pojavlaunch.BrilliantToast.show(getContext(), getContext().getString(R.string.error_key_unsupported), true);
                 break;
         }
     }

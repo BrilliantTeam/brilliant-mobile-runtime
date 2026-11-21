@@ -16,7 +16,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.kdt.CustomSeekbar;
@@ -33,7 +33,7 @@ public abstract class QuickSettingSideDialog extends com.kdt.SideDialogView {
 
     private SharedPreferences.Editor mEditor;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch mGyroSwitch, mGyroXSwitch, mGyroYSwitch, mGestureSwitch, mMouseGrabSwitch, mKeyboardPanningSwitch;
+    private CheckBox mGyroSwitch, mGyroXSwitch, mGyroYSwitch, mGestureSwitch, mMouseGrabSwitch, mKeyboardPanningSwitch;
     private CustomSeekbar mGyroSensitivityBar, mMouseSpeedBar, mGestureDelayBar, mResolutionBar;
     private TextView mGyroSensitivityText, mGyroSensitivityDisplayText, mMouseSpeedText, mGestureDelayText, mGestureDelayDisplayText, mResolutionText;
 

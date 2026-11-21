@@ -3,15 +3,13 @@ package net.kdt.pojavlaunch.customcontrols;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -24,13 +22,13 @@ import java.io.File;
 
 @SuppressLint("ViewConstructor")
 public class ControlEditorBar extends LinearLayout {
-    private static final int ACCENT = 0xFFF6E0A4;
-    private static final int ACCENT_INK = 0xFF111111;
     private static final int[] CONTEXTS = {R.string.brilliant_editor_game, R.string.brilliant_editor_menu, R.string.brilliant_editor_all};
 
     private final ControlLayout mLayout;
     private final EditorExitable mExit;
     private final TextView[] mTabs = new TextView[CONTEXTS.length];
+    private android.graphics.Typeface mTabFont;
+    private PopupWindow mPopup;
     private int mContext = 0;
     private boolean mAtBottom = false;
     private String mSnapshot;
@@ -41,21 +39,36 @@ public class ControlEditorBar extends LinearLayout {
         mExit = exit;
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
-        setBackgroundColor(0xF226282C);
+        setBackgroundResource(R.drawable.brilliant_float);
         int pad = dp(6);
-        setPadding(pad, pad, pad, pad);
+        setPadding(pad, pad, pad, dp(4));
         setTranslationZ(15);
         setClickable(true);
 
+        LinearLayout tabs = new LinearLayout(context);
+        tabs.setBackgroundResource(R.drawable.mc_sunken);
+        tabs.setPadding(dp(2), dp(2), dp(2), dp(2));
         for (int i = 0; i < CONTEXTS.length; i++) {
             final int index = i;
-            mTabs[i] = chip(CONTEXTS[i], v -> showContext(index));
-            addView(mTabs[i]);
+            TextView tab = new TextView(context);
+            tab.setText(CONTEXTS[i]);
+            tab.setTextSize(14);
+            tab.setGravity(Gravity.CENTER);
+            tab.setMinHeight(dp(36));
+            tab.setPadding(dp(16), 0, dp(16), 0);
+            tab.setSingleLine(true);
+            tab.setBackgroundResource(R.drawable.mc_segment);
+            tab.setTextColor(getResources().getColorStateList(R.color.mc_segment_text, context.getTheme()));
+            tab.setOnClickListener(v -> showContext(index));
+            mTabFont = tab.getTypeface();
+            mTabs[i] = tab;
+            tabs.addView(tab);
         }
+        addView(tabs, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         TextView hint = new TextView(context);
         hint.setText(R.string.brilliant_editor_hint);
-        hint.setTextColor(0xFFB8BEC4);
+        hint.setTextColor(getResources().getColor(R.color.secondary_text, context.getTheme()));
         hint.setTextSize(12);
         hint.setSingleLine(true);
         hint.setEllipsize(TextUtils.TruncateAt.END);
@@ -70,9 +83,7 @@ public class ControlEditorBar extends LinearLayout {
         addView(flip);
         addView(chip(R.string.brilliant_editor_reset, v -> confirmReset()));
         addView(chip(R.string.brilliant_editor_cancel, v -> requestCancel()));
-        TextView save = chip(R.string.brilliant_editor_save, v -> save());
-        paint(save, ACCENT, ACCENT_INK);
-        addView(save);
+        addView(button(R.string.brilliant_editor_save, v -> save(), R.style.BrilliantChip_Accent));
 
         mSnapshot = mLayout.snapshot();
         settle();
@@ -92,36 +103,25 @@ public class ControlEditorBar extends LinearLayout {
     }
 
     private TextView chip(int text, OnClickListener listener) {
-        TextView view = new TextView(getContext());
-        view.setText(text);
-        view.setTextSize(14);
-        view.setGravity(Gravity.CENTER);
-        view.setMinHeight(dp(40));
-        view.setMinWidth(dp(48));
-        view.setPadding(dp(12), 0, dp(12), 0);
-        view.setSingleLine(true);
-        view.setOnClickListener(listener);
-        paint(view, 0x26FFFFFF, Color.WHITE);
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        params.setMarginStart(dp(4));
-        view.setLayoutParams(params);
-        return view;
+        return button(text, listener, R.style.BrilliantChip);
     }
 
-    private void paint(TextView view, int background, int ink) {
-        GradientDrawable shape = new GradientDrawable();
-        shape.setColor(background);
-        shape.setCornerRadius(dp(6));
-        view.setBackground(shape);
-        view.setTextColor(ink);
+    private TextView button(int text, OnClickListener listener, int style) {
+        TextView view = new TextView(getContext(), null, 0, style);
+        view.setText(text);
+        view.setOnClickListener(listener);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.setMarginStart(dp(6));
+        view.setLayoutParams(params);
+        return view;
     }
 
     private void showContext(int index) {
         mContext = index;
         for (int i = 0; i < mTabs.length; i++) {
             boolean on = i == index;
-            paint(mTabs[i], on ? 0xFFFFFFFF : 0x26FFFFFF, on ? ACCENT_INK : Color.WHITE);
             mTabs[i].setSelected(on);
+            mTabs[i].setTypeface(mTabFont, on ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
         }
         mLayout.filterForEditor(index != 1, index != 0);
     }
@@ -137,33 +137,51 @@ public class ControlEditorBar extends LinearLayout {
     }
 
     private void openAddMenu(View anchor) {
-        PopupMenu menu = new PopupMenu(getContext(), anchor);
-        menu.getMenu().add(0, 0, 0, R.string.brilliant_editor_add_button);
-        menu.getMenu().add(0, 1, 1, R.string.brilliant_editor_add_drawer);
-        menu.getMenu().add(0, 2, 2, R.string.brilliant_editor_add_joystick);
-        menu.setOnMenuItemClickListener(item -> {
-            String centerX = "${screen_width} / 2 - ${width} / 2";
-            String centerY = "${screen_height} / 2 - ${height} / 2";
-            if (item.getItemId() == 0) {
-                ControlData data = ControlData.brilliantStyle(new ControlData(getContext().getString(R.string.brilliant_editor_new), new int[]{}, centerX, centerY, 64, 48, false));
-                applyContext(data);
-                mLayout.addControlButton(data);
-            } else if (item.getItemId() == 1) {
-                ControlDrawerData drawer = new ControlDrawerData();
-                ControlData.brilliantStyle(drawer.properties);
-                drawer.properties.dynamicX = centerX;
-                drawer.properties.dynamicY = centerY;
-                applyContext(drawer.properties);
-                mLayout.addDrawer(drawer);
-            } else {
-                ControlJoystickData joystick = new ControlJoystickData();
-                applyContext(joystick);
-                mLayout.addJoystickButton(joystick);
-            }
-            mLayout.editNewest();
-            return true;
-        });
-        menu.show();
+        LinearLayout list = new LinearLayout(getContext());
+        list.setOrientation(VERTICAL);
+        list.setBackgroundResource(R.drawable.background_control_editor);
+        PopupWindow popup = new PopupWindow(list, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
+        mPopup = popup;
+        popup.setOutsideTouchable(true);
+        popup.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+        popup.setElevation(dp(8));
+        int[] labels = {R.string.brilliant_editor_add_button, R.string.brilliant_editor_add_drawer, R.string.brilliant_editor_add_joystick};
+        int[] icons = {R.drawable.brilliant_icon_grid, R.drawable.brilliant_icon_menu, R.drawable.brilliant_icon_gamepad};
+        for (int i = 0; i < labels.length; i++) {
+            final int kind = i;
+            TextView item = (TextView) android.view.LayoutInflater.from(getContext()).inflate(R.layout.brilliant_menu_item, list, false);
+            item.setText(labels[i]);
+            item.setCompoundDrawablesRelativeWithIntrinsicBounds(icons[i], 0, 0, 0);
+            item.setMinWidth(dp(200));
+            item.setOnClickListener(v -> {
+                popup.dismiss();
+                addControl(kind);
+            });
+            list.addView(item);
+        }
+        popup.showAsDropDown(anchor);
+    }
+
+    private void addControl(int kind) {
+        String centerX = "${screen_width} / 2 - ${width} / 2";
+        String centerY = "${screen_height} / 2 - ${height} / 2";
+        if (kind == 0) {
+            ControlData data = ControlData.brilliantStyle(new ControlData(getContext().getString(R.string.brilliant_editor_new), new int[]{}, centerX, centerY, 64, 48, false));
+            applyContext(data);
+            mLayout.addControlButton(data);
+        } else if (kind == 1) {
+            ControlDrawerData drawer = new ControlDrawerData();
+            ControlData.brilliantStyle(drawer.properties);
+            drawer.properties.dynamicX = centerX;
+            drawer.properties.dynamicY = centerY;
+            applyContext(drawer.properties);
+            mLayout.addDrawer(drawer);
+        } else {
+            ControlJoystickData joystick = new ControlJoystickData();
+            applyContext(joystick);
+            mLayout.addJoystickButton(joystick);
+        }
+        mLayout.editNewest();
     }
 
     private void confirmReset() {
@@ -184,6 +202,12 @@ public class ControlEditorBar extends LinearLayout {
                     showContext(mContext);
                 })
                 .show();
+    }
+
+    public boolean closePopup(boolean close) {
+        if (mPopup == null || !mPopup.isShowing()) return false;
+        if (close) mPopup.dismiss();
+        return true;
     }
 
     public void requestCancel() {
@@ -211,7 +235,7 @@ public class ControlEditorBar extends LinearLayout {
             Tools.showError(getContext(), e);
             return;
         }
-        Toast.makeText(getContext(), R.string.brilliant_editor_saved, Toast.LENGTH_SHORT).show();
+        net.kdt.pojavlaunch.BrilliantToast.show(getContext(), R.string.brilliant_editor_saved);
         mExit.exitEditor();
     }
 

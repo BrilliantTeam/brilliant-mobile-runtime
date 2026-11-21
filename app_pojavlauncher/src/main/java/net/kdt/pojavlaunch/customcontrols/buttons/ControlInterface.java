@@ -51,8 +51,13 @@ public interface ControlInterface extends View.OnLongClickListener, GrabListener
     void cloneButton();
 
     default void setVisible(boolean isVisible) {
-        if(getProperties().isHideable)
-            getControlView().setVisibility(isVisible ? VISIBLE : GONE);
+        getControlView().setVisibility(isVisible ? VISIBLE : GONE);
+    }
+
+    default void updateVisibility(boolean isGrabbing, boolean controlsShown) {
+        ControlData properties = getProperties();
+        boolean inContext = (properties.displayInGame && isGrabbing) || (properties.displayInMenu && !isGrabbing);
+        setVisible(inContext && (controlsShown || !properties.isHideable));
     }
 
     void sendKeyPresses(boolean isDown);
@@ -65,7 +70,7 @@ public interface ControlInterface extends View.OnLongClickListener, GrabListener
     @Override
     default void onGrabState(boolean isGrabbing) {
         if (getControlLayoutParent() != null && getControlLayoutParent().getModifiable()) return; // Disable when edited
-        setVisible(((getProperties().displayInGame && isGrabbing) || (getProperties().displayInMenu && !isGrabbing)) && getControlLayoutParent().areControlVisible());
+        updateVisibility(isGrabbing, getControlLayoutParent().areControlVisible());
     }
 
     default ControlLayout getControlLayoutParent() {

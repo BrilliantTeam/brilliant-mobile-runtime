@@ -124,8 +124,8 @@ public class Touchpad extends View implements GrabListener, AbstractTouchpad {
     @Override
     public void applyMotionVector(float x, float y) {
         if (mDisplayState) { // Make sure no motion leaks through when disabling a moving cursor
-            mMouseX = Math.max(0, Math.min(currentDisplayMetrics.widthPixels, mMouseX + x * LauncherPreferences.PREF_MOUSESPEED));
-            mMouseY = Math.max(0, Math.min(currentDisplayMetrics.heightPixels, mMouseY + y * LauncherPreferences.PREF_MOUSESPEED));
+            mMouseX = Math.max(0, Math.min(getWidth() > 0 ? getWidth() : currentDisplayMetrics.widthPixels, mMouseX + x * LauncherPreferences.PREF_MOUSESPEED));
+            mMouseY = Math.max(0, Math.min(getHeight() > 0 ? getHeight() : currentDisplayMetrics.heightPixels, mMouseY + y * LauncherPreferences.PREF_MOUSESPEED));
             updateMousePosition();
         }
     }

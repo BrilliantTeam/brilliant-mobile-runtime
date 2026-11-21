@@ -252,7 +252,7 @@ public class ControlLayout extends FrameLayout {
 
 		mControlVisible = isVisible;
 		for(ControlInterface button : getButtonChildren()){
-			button.setVisible(((button.getProperties().displayInGame && isGrabbing()) || (button.getProperties().displayInMenu && !isGrabbing())) && isVisible);
+			button.updateVisibility(isGrabbing(), isVisible);
 		}
 	}
 
@@ -400,6 +400,19 @@ public class ControlLayout extends FrameLayout {
 		}
 	}
 
+	public boolean hasEditLayer() {
+		return mControlDialog != null && mControlDialog.isDisplaying();
+	}
+
+	public boolean closeEditLayer() {
+		if (!hasEditLayer()) return false;
+		if (mControlDialog.disappearLayer()) {
+			if (mActionRow != null) mActionRow.setFollowedButton(null);
+			if (mHandleView != null) mHandleView.hide();
+		}
+		return true;
+	}
+
 	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -443,11 +456,23 @@ public class ControlLayout extends FrameLayout {
 		return mLayout == null ? "" : Tools.GLOBAL_GSON.toJson(mLayout);
 	}
 
+	private boolean mFilterGame = true, mFilterMenu = true;
+
 	public void filterForEditor(boolean game, boolean menu) {
+		mFilterGame = game;
+		mFilterMenu = menu;
 		removeEditWindow();
+		applyEditorFilter(null);
+	}
+
+	public void applyEditorFilter(ControlInterface edited) {
 		for (ControlInterface button : getButtonChildren()) {
 			ControlData data = button instanceof ControlSubButton ? ((ControlSubButton) button).parentDrawer.getProperties() : button.getProperties();
-			button.getControlView().setVisibility((game && data.displayInGame) || (menu && data.displayInMenu) ? VISIBLE : GONE);
+			button.getControlView().setVisibility((mFilterGame && data.displayInGame) || (mFilterMenu && data.displayInMenu) ? VISIBLE : GONE);
+		}
+		if (edited != null && edited.getControlView().getVisibility() != VISIBLE) {
+			if (mActionRow != null) mActionRow.setFollowedButton(null);
+			if (mHandleView != null) mHandleView.hide();
 		}
 	}
 
@@ -526,7 +551,7 @@ public class ControlLayout extends FrameLayout {
 			}
 			try {
 				String jsonPath = saveToDirectory(mEditText.getText().toString());
-				Toast.makeText(context, context.getString(R.string.global_save) + ": " + jsonPath, Toast.LENGTH_SHORT).show();
+				net.kdt.pojavlaunch.BrilliantToast.show(context, context.getString(R.string.global_save) + ": " + jsonPath);
 				mDialog.dismiss();
 				if(mListener != null) mListener.exitEditor();
 			} catch (Throwable th) {

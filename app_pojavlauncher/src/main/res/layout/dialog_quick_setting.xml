@@ -5,16 +5,18 @@
     android:id="@+id/edit_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/padding_moderate"
-    android:paddingVertical="@dimen/padding_moderate"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="12dp"
     app:layout_optimizationLevel="standard|dimensions|chains">
 
     <!-- Resolution settings -->
     <TextView
         android:id="@+id/editResolution_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/mcl_setting_title_resolution_scaler"
@@ -24,6 +26,7 @@
 
     <com.kdt.CustomSeekbar
         android:id="@+id/editResolution_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
         android:min="@integer/resolution_seekbar_min"
@@ -36,6 +39,8 @@
 
     <TextView
         android:id="@+id/editResolution_textView_percent"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:gravity="end"
@@ -46,42 +51,44 @@
         app:layout_constraintTop_toTopOf="@id/editResolution_textView" />
 
     <!-- Gyroscope settings -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxGyro"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/preference_enable_gyro_title"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editResolution_seekbar"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/editResolution_seekbar" />
 
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxGyroX"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/preference_gyro_invert_x_axis"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxGyro"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/checkboxGyro" />
 
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxGyroY"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/preference_gyro_invert_y_axis"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxGyroX"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/checkboxGyroX" />
 
     <!-- Gyroscope sensitivity -->
     <TextView
         android:id="@+id/editGyro_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/preference_gyro_sensitivity_title"
@@ -91,6 +98,7 @@
 
     <com.kdt.CustomSeekbar
         android:id="@+id/editGyro_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -105,6 +113,8 @@
 
     <TextView
         android:id="@+id/editGyro_textView_percent"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:gravity="end"
@@ -118,9 +128,11 @@
     <!-- Mouse settings -->
     <TextView
         android:id="@+id/editMouseSpeed_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/mcl_setting_title_mousespeed"
@@ -130,6 +142,7 @@
 
     <com.kdt.CustomSeekbar
         android:id="@+id/editMouseSpeed_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -144,6 +157,8 @@
 
     <TextView
         android:id="@+id/editMouseSpeed_textView_percent"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:gravity="end"
@@ -154,22 +169,24 @@
         app:layout_constraintTop_toTopOf="@id/editMouseSpeed_textView" />
 
     <!-- Gesture toggle -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxGesture"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/mcl_disable_gestures"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editMouseSpeed_seekbar"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/editMouseSpeed_seekbar" />
 
     <!-- gesture settings -->
     <TextView
         android:id="@+id/editGestureDelay_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/mcl_setting_title_longpresstrigger"
@@ -179,6 +196,7 @@
 
     <com.kdt.CustomSeekbar
         android:id="@+id/editGestureDelay_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -193,6 +211,8 @@
 
     <TextView
         android:id="@+id/editGestureDelay_textView_percent"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
         android:layout_width="150dp"
         android:layout_height="0dp"
         android:gravity="end"
@@ -202,24 +222,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/editGestureDelay_textView" />
 
-    <Switch
+    <CheckBox
         android:id="@+id/always_grab_mouse_side_dialog"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/mcl_setting_title_grab_mouse"
 
 
-        app:layout_constraintTop_toBottomOf="@+id/editGestureDelay_seekbar"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@+id/editGestureDelay_seekbar" />
 
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxKeyboardPanning"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/mcl_setting_title_keyboard_panning"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/always_grab_mouse_side_dialog"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@+id/always_grab_mouse_side_dialog" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

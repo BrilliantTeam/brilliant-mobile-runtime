@@ -40,7 +40,7 @@ public class GamepadMapperAdapter extends RecyclerView.Adapter<GamepadMapperAdap
         String[] specialKeycodeNames = GamepadMap.getSpecialKeycodeNames();
         mSpecialKeycodeCount = specialKeycodeNames.length;
         mKeyAdapter.addAll(specialKeycodeNames);
-        mKeyAdapter.addAll(EfficientAndroidLWJGLKeycode.generateKeyName());
+        mKeyAdapter.addAll(EfficientAndroidLWJGLKeycode.generateKeyName(context));
         createRebinderMap();
         updateRealButtons();
     }

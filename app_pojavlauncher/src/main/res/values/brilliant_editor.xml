@@ -21,4 +21,30 @@
     <string name="brilliant_editor_new">New</string>
     <string name="brilliant_hold_hint">Hold to use this button</string>
     <string name="brilliant_open_folder_hint">No app can open folders. Open the system Files app and find Brilliant Launcher in the side menu.</string>
+    <string name="brilliant_close">Close</string>
+    <string name="brilliant_back">Back</string>
+    <string-array name="brilliant_key_words">
+        <item>None</item>
+        <item>Back (Esc)</item>
+        <item>Home button</item>
+        <item>Arrow</item>
+        <item>Left %1$s</item>
+        <item>Right %1$s</item>
+        <item>Numpad %1$s</item>
+        <item>Space</item>
+        <item>Menu key</item>
+    </string-array>
+    <string-array name="brilliant_special_keys">
+        <item>Toggle keyboard</item>
+        <item>Hide controls</item>
+        <item>Left click</item>
+        <item>Right click</item>
+        <item>Toggle mouse</item>
+        <item>Middle click</item>
+        <item>Scroll up</item>
+        <item>Scroll down</item>
+        <item>Game menu</item>
+        <item>Mouse back</item>
+        <item>Mouse forward</item>
+    </string-array>
 </resources>

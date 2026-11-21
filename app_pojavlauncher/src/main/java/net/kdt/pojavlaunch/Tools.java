@@ -1704,7 +1704,7 @@ public final class Tools {
             try {
                 context.startActivity(folder);
             } catch (android.content.ActivityNotFoundException e) {
-                Toast.makeText(context, R.string.brilliant_open_folder_hint, Toast.LENGTH_LONG).show();
+                BrilliantToast.show(context, context.getString(R.string.brilliant_open_folder_hint), true);
             }
             return;
         }

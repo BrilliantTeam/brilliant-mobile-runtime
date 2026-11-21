@@ -7,26 +7,31 @@
     <View
         android:id="@+id/top_log_view"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="#555555"
+        android:layout_height="58dp"
+        android:background="@drawable/brilliant_panel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/log_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="25dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="6dp"
         android:text="@string/log_view_label_log_output"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/primary_text"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/top_log_view"
         app:layout_constraintStart_toStartOf="@+id/top_log_view"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ToggleButton
         android:id="@+id/content_log_toggle_autoscroll"
+        style="@style/BrilliantChip"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="10dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="4dp"
         android:textOff="@string/log_view_button_scroll_off"
         android:textOn="@string/log_view_button_scroll_on"
         app:layout_constraintBottom_toBottomOf="@+id/top_log_view"
@@ -35,9 +40,11 @@
 
     <ToggleButton
         android:id="@+id/content_log_toggle_log"
+        style="@style/BrilliantChip"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="10dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="4dp"
         android:textOff="@string/log_view_button_output_off"
         android:textOn="@string/log_view_button_output_on"
         app:layout_constraintBottom_toBottomOf="@+id/top_log_view"
@@ -46,10 +53,16 @@
 
     <ImageButton
         android:id="@+id/log_view_cancel"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_delete"
+        android:layout_width="48dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        android:paddingBottom="5dp"
+        android:scaleType="center"
+        android:background="@drawable/brilliant_chip"
+        android:contentDescription="@string/brilliant_close"
+        android:src="@drawable/brilliant_icon_close"
+        android:tint="@color/primary_text"
         app:layout_constraintBottom_toBottomOf="@+id/top_log_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -58,8 +71,7 @@
         android:id="@+id/content_log_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:alpha="0.8"
-        android:background="#000000"
+        android:background="#E616181C"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_log_view">
 
@@ -67,6 +79,9 @@
             android:id="@+id/content_log_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="#DDE1E5"
+            android:textSize="12sp"
             android:textIsSelectable="true"/>
 
     </com.kdt.DefocusableScrollView>

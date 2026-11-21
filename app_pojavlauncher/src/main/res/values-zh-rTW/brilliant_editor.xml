@@ -20,4 +20,30 @@
     <string name="brilliant_editor_new">新按鈕</string>
     <string name="brilliant_hold_hint">長按才會觸發這個按鍵</string>
     <string name="brilliant_open_folder_hint">找不到可以開啟資料夾的 App。請打開系統的「檔案」App，在側邊選單找到「輝煌啟動器」。</string>
+    <string name="brilliant_close">關閉</string>
+    <string name="brilliant_back">返回</string>
+    <string-array name="brilliant_key_words">
+        <item>無</item>
+        <item>返回鍵（Esc）</item>
+        <item>主畫面鍵</item>
+        <item>方向鍵</item>
+        <item>左 %1$s</item>
+        <item>右 %1$s</item>
+        <item>數字鍵盤 %1$s</item>
+        <item>空白鍵</item>
+        <item>選單鍵</item>
+    </string-array>
+    <string-array name="brilliant_special_keys">
+        <item>開關鍵盤</item>
+        <item>隱藏按鍵</item>
+        <item>滑鼠左鍵</item>
+        <item>滑鼠右鍵</item>
+        <item>切換滑鼠</item>
+        <item>滑鼠中鍵</item>
+        <item>滾輪往上</item>
+        <item>滾輪往下</item>
+        <item>遊戲選單</item>
+        <item>滑鼠側鍵（上一頁）</item>
+        <item>滑鼠側鍵（下一頁）</item>
+    </string-array>
 </resources>

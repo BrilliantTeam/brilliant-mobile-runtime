@@ -36,6 +36,7 @@ public class ColorSelector extends SideDialogView implements HueSelectionListene
     public ColorSelector(Context context, ViewGroup parent, @Nullable ColorSelectionListener colorSelectionListener) {
         super(context, parent, R.layout.dialog_color_selector);
         mColorSelectionListener = colorSelectionListener;
+        setStartButtonListener(R.string.brilliant_back, v -> disappear(false));
     }
 
     @Override

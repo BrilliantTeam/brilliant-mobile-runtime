@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/brilliant_field" />
+    <item android:drawable="@drawable/brilliant_icon_chevron_down" android:gravity="end|center_vertical" android:end="10dp" android:width="16dp" android:height="16dp" />
+</layer-list>

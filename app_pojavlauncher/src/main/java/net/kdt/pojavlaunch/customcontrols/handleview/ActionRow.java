@@ -54,19 +54,31 @@ public class ActionRow extends LinearLayout {
         setTranslationZ(11);
         setVisibility(GONE);
         setOrientation(HORIZONTAL);
-        setLayoutParams(new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                getResources().getDimensionPixelOffset(R.dimen._40sdp)
-        ));
+        setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setBackgroundResource(R.drawable.brilliant_float);
 
         actionButtons[0] = new DeleteButton(getContext());
         actionButtons[1] = new CloneButton(getContext());
         actionButtons[2] = new AddSubButton(getContext());
 
         // This is not pretty code, don't do this.
+        float density = getResources().getDisplayMetrics().density;
         for(ActionButtonInterface buttonInterface: actionButtons){
-            View button = ((View)(buttonInterface));
-            addView(button, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1F));
+            android.widget.TextView button = (android.widget.TextView) buttonInterface;
+            boolean danger = buttonInterface instanceof DeleteButton;
+            android.content.res.TypedArray style = getContext().obtainStyledAttributes(danger ? R.style.BrilliantChip_Danger : R.style.BrilliantChip, new int[]{android.R.attr.textColor, android.R.attr.background});
+            button.setBackground(style.getDrawable(1));
+            button.setTextColor(style.getColorStateList(0));
+            style.recycle();
+            button.setAllCaps(false);
+            button.setTextSize(14);
+            button.setStateListAnimator(null);
+            button.setMinHeight((int) (44 * density));
+            button.setMinimumHeight((int) (44 * density));
+            button.setPadding((int) (14 * density), (int) (6 * density), (int) (14 * density), (int) (11 * density));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins((int) (2 * density), 0, (int) (2 * density), 0);
+            addView(button, params);
         }
 
         setElevation(5F);
@@ -111,7 +123,8 @@ public class ActionRow extends LinearLayout {
         if(mFollowedView == null) return;
         int side = pickSide();
 
-        setX(MathUtils.clamp(getXPosition(side), 0, currentDisplayMetrics.widthPixels - getWidth()));
+        View parent = (View) getParent();
+        setX(MathUtils.clamp(getXPosition(side), 0, (parent != null && parent.getWidth() > 0 ? parent.getWidth() : currentDisplayMetrics.widthPixels) - getWidth()));
         setY(getYPosition(side));
     }
 

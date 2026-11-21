@@ -2,6 +2,7 @@ package net.kdt.pojavlaunch;
 
 import static org.lwjgl.glfw.CallbackBridge.sendKeyPress;
 
+import android.content.Context;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
@@ -174,14 +175,76 @@ public class EfficientAndroidLWJGLKeycode {
         return index >= 0;
     }
 
-    public static String[] generateKeyName() {
+    public static String[] generateKeyName(Context context) {
         if (androidKeyNameArray == null) {
+            String[] words = context.getResources().getStringArray(R.array.brilliant_key_words);
             androidKeyNameArray = new String[sAndroidKeycodes.length];
             for(int i=0; i < androidKeyNameArray.length; ++i){
-                androidKeyNameArray[i] = KeyEvent.keyCodeToString(sAndroidKeycodes[i]).replace("KEYCODE_", "");
+                androidKeyNameArray[i] = keyLabel(sAndroidKeycodes[i], words);
             }
         }
         return androidKeyNameArray;
+    }
+
+    private static String keyLabel(int code, String[] w) {
+        if (code >= KeyEvent.KEYCODE_NUMPAD_0 && code <= KeyEvent.KEYCODE_NUMPAD_9) return String.format(w[6], String.valueOf(code - KeyEvent.KEYCODE_NUMPAD_0));
+        switch (code) {
+            case KeyEvent.KEYCODE_UNKNOWN: return w[0];
+            case KeyEvent.KEYCODE_BACK: return w[1];
+            case KeyEvent.KEYCODE_HOME: return w[2];
+            case KeyEvent.KEYCODE_DPAD_UP: return w[3] + " ↑";
+            case KeyEvent.KEYCODE_DPAD_DOWN: return w[3] + " ↓";
+            case KeyEvent.KEYCODE_DPAD_LEFT: return w[3] + " ←";
+            case KeyEvent.KEYCODE_DPAD_RIGHT: return w[3] + " →";
+            case KeyEvent.KEYCODE_ALT_LEFT: return String.format(w[4], "Alt");
+            case KeyEvent.KEYCODE_ALT_RIGHT: return String.format(w[5], "Alt");
+            case KeyEvent.KEYCODE_SHIFT_LEFT: return String.format(w[4], "Shift");
+            case KeyEvent.KEYCODE_SHIFT_RIGHT: return String.format(w[5], "Shift");
+            case KeyEvent.KEYCODE_CTRL_LEFT: return String.format(w[4], "Ctrl");
+            case KeyEvent.KEYCODE_CTRL_RIGHT: return String.format(w[5], "Ctrl");
+            case KeyEvent.KEYCODE_META_LEFT: return String.format(w[4], "Win");
+            case KeyEvent.KEYCODE_META_RIGHT: return String.format(w[5], "Win");
+            case KeyEvent.KEYCODE_SPACE: return w[7];
+            case KeyEvent.KEYCODE_MENU: return w[8];
+            case KeyEvent.KEYCODE_TAB: return "Tab";
+            case KeyEvent.KEYCODE_ENTER: return "Enter";
+            case KeyEvent.KEYCODE_DEL: return "Backspace";
+            case KeyEvent.KEYCODE_FORWARD_DEL: return "Delete";
+            case KeyEvent.KEYCODE_ESCAPE: return "Esc";
+            case KeyEvent.KEYCODE_PAGE_UP: return "Page Up";
+            case KeyEvent.KEYCODE_PAGE_DOWN: return "Page Down";
+            case KeyEvent.KEYCODE_MOVE_HOME: return "Home";
+            case KeyEvent.KEYCODE_MOVE_END: return "End";
+            case KeyEvent.KEYCODE_INSERT: return "Insert";
+            case KeyEvent.KEYCODE_CAPS_LOCK: return "Caps Lock";
+            case KeyEvent.KEYCODE_NUM_LOCK: return "Num Lock";
+            case KeyEvent.KEYCODE_SCROLL_LOCK: return "Scroll Lock";
+            case KeyEvent.KEYCODE_SYSRQ: return "Print Screen";
+            case KeyEvent.KEYCODE_BREAK: return "Pause";
+            case KeyEvent.KEYCODE_GRAVE: return "`";
+            case KeyEvent.KEYCODE_MINUS: return "-";
+            case KeyEvent.KEYCODE_EQUALS: return "=";
+            case KeyEvent.KEYCODE_LEFT_BRACKET: return "[";
+            case KeyEvent.KEYCODE_RIGHT_BRACKET: return "]";
+            case KeyEvent.KEYCODE_BACKSLASH: return "\\";
+            case KeyEvent.KEYCODE_SEMICOLON: return ";";
+            case KeyEvent.KEYCODE_APOSTROPHE: return "'";
+            case KeyEvent.KEYCODE_SLASH: return "/";
+            case KeyEvent.KEYCODE_COMMA: return ",";
+            case KeyEvent.KEYCODE_PERIOD: return ".";
+            case KeyEvent.KEYCODE_AT: return "@";
+            case KeyEvent.KEYCODE_POUND: return "#";
+            case KeyEvent.KEYCODE_PLUS: return "+";
+            case KeyEvent.KEYCODE_NUMPAD_DIVIDE: return String.format(w[6], "/");
+            case KeyEvent.KEYCODE_NUMPAD_MULTIPLY: return String.format(w[6], "*");
+            case KeyEvent.KEYCODE_NUMPAD_SUBTRACT: return String.format(w[6], "-");
+            case KeyEvent.KEYCODE_NUMPAD_ADD: return String.format(w[6], "+");
+            case KeyEvent.KEYCODE_NUMPAD_DOT: return String.format(w[6], ".");
+            case KeyEvent.KEYCODE_NUMPAD_COMMA: return String.format(w[6], ",");
+            case KeyEvent.KEYCODE_NUMPAD_ENTER: return String.format(w[6], "Enter");
+            case KeyEvent.KEYCODE_NUMPAD_EQUALS: return String.format(w[6], "=");
+            default: return KeyEvent.keyCodeToString(code).replace("KEYCODE_", "");
+        }
     }
 
     public static void execKey(KeyEvent keyEvent, int valueIndex) {

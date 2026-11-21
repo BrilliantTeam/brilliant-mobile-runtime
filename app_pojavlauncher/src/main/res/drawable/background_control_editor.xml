@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <padding
-        android:bottom="@dimen/padding_small"
-        android:left="@dimen/padding_small"
-        android:right="@dimen/padding_small"
-        android:top="@dimen/padding_small" />
-    <solid android:color="@color/background_app" />
-    <stroke android:width="1dp" android:color="@color/brilliant_line" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item><shape android:shape="rectangle"><solid android:color="#FF26282C" /><padding android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp" /></shape></item>
+    <item android:height="2dp" android:gravity="top|fill_horizontal"><shape android:shape="rectangle"><solid android:color="#FF55585C" /></shape></item>
+    <item android:width="2dp" android:gravity="left|fill_vertical"><shape android:shape="rectangle"><solid android:color="#FF55585C" /></shape></item>
+    <item android:width="2dp" android:gravity="right|fill_vertical"><shape android:shape="rectangle"><solid android:color="#FF05070A" /></shape></item>
+    <item android:height="2dp" android:gravity="bottom|fill_horizontal"><shape android:shape="rectangle"><solid android:color="#FF05070A" /></shape></item>
+</layer-list>

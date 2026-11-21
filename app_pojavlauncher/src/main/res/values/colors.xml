@@ -10,8 +10,8 @@
     <color name="background_status_bar">#16181c</color>
     <color name="background_bottom_bar">#16181c</color>
 
-    <color name="primary_text">#FFFFFF</color>
-    <color name="secondary_text">#B9BEC4</color>
+    <color name="primary_text">#EAECF0</color>
+    <color name="secondary_text">#A2A9B1</color>
 
     <color name="brilliant_accent">#f6e0a4</color>
     <color name="brilliant_ink">#111111</color>

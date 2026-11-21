@@ -7,14 +7,17 @@
     android:id="@+id/edit_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/padding_moderate"
-    android:paddingVertical="@dimen/padding_moderate"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="12dp"
     app:layout_optimizationLevel="standard|dimensions|chains">
 
 
     <!-- EDIT NAME SECTION -->
     <TextView
         android:id="@+id/editName_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -26,6 +29,7 @@
 
     <EditText
         android:id="@+id/editName_editText"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -40,6 +44,10 @@
     <!--  SIZE SECTION -->
     <TextView
         android:id="@+id/editSize_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -52,7 +60,10 @@
 
     <EditText
         android:id="@+id/editSize_editTextX"
-        android:layout_width="@dimen/_134sdp"
+        android:layout_marginTop="6dp"
+        android:layout_width="0dp"
+        app:layout_constraintEnd_toStartOf="@id/editSize_x_textView"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:imeOptions="flagNoExtractUi"
@@ -63,6 +74,7 @@
 
     <EditText
         android:id="@+id/editSize_editTextY"
+        app:layout_constraintStart_toEndOf="@id/editSize_x_textView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
@@ -71,15 +83,16 @@
 
         app:layout_constraintBottom_toBottomOf="@+id/editSize_editTextX"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/editSize_editTextX"
         app:layout_constraintTop_toTopOf="@+id/editSize_editTextX" />
 
     <TextView
         android:id="@+id/editSize_x_textView"
+        android:paddingHorizontal="10dp"
+        android:textColor="@color/secondary_text"
+        android:text="×"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="x"
 
         app:layout_constraintBottom_toBottomOf="@+id/editSize_editTextX"
         app:layout_constraintEnd_toStartOf="@id/editSize_editTextY"
@@ -89,6 +102,10 @@
     <!-- MAPPING SECTION -->
     <TextView
         android:id="@+id/editMapping_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -105,6 +122,7 @@
     -->
     <Spinner
         android:id="@+id/editMapping_spinner_1"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:dropDownWidth="match_parent"
@@ -120,6 +138,7 @@
 
     <Spinner
         android:id="@+id/editMapping_spinner_2"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:dropDownWidth="match_parent"
@@ -168,7 +187,9 @@
 
     <TextView
         android:id="@+id/mapping_1_textview"
-        style="?android:attr/spinnerItemStyle"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="14dp"
+        style="@style/BrilliantSelectText"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:ellipsize="marquee"
@@ -188,15 +209,19 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:text="+"
+        android:textColor="@color/secondary_text"
+        android:paddingHorizontal="6dp"
 
         app:layout_constraintBottom_toBottomOf="@+id/mapping_1_textview"
-        app:layout_constraintEnd_toEndOf="@+id/mapping_1_textview"
+        app:layout_constraintEnd_toStartOf="@+id/mapping_2_textview"
         app:layout_constraintStart_toEndOf="@id/mapping_1_textview"
         app:layout_constraintTop_toTopOf="@+id/mapping_1_textview" />
 
     <TextView
         android:id="@+id/mapping_2_textview"
-        style="?android:attr/spinnerItemStyle"
+        app:layout_constraintBottom_toBottomOf="@id/mapping_1_textview"
+        android:layout_marginStart="14dp"
+        style="@style/BrilliantSelectText"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:ellipsize="marquee"
@@ -212,7 +237,9 @@
 
     <TextView
         android:id="@+id/mapping_3_textview"
-        style="?android:attr/spinnerItemStyle"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="14dp"
+        style="@style/BrilliantSelectText"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:ellipsize="marquee"
@@ -228,20 +255,24 @@
 
     <TextView
         android:id="@+id/editMapping_plus_3"
+        app:layout_constraintTop_toTopOf="@+id/mapping_3_textview"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:gravity="center"
         android:text="+"
+        android:textColor="@color/secondary_text"
+        android:paddingHorizontal="6dp"
 
 
         app:layout_constraintBottom_toBottomOf="@+id/mapping_3_textview"
-        app:layout_constraintEnd_toEndOf="@+id/mapping_3_textview"
-        app:layout_constraintStart_toEndOf="@id/mapping_3_textview"
-        app:layout_constraintTop_toBottomOf="@+id/mapping_1_textview" />
+        app:layout_constraintEnd_toStartOf="@+id/mapping_4_textview"
+        app:layout_constraintStart_toEndOf="@id/mapping_3_textview" />
 
     <TextView
         android:id="@+id/mapping_4_textview"
-        style="?android:attr/spinnerItemStyle"
+        app:layout_constraintBottom_toBottomOf="@id/mapping_3_textview"
+        android:layout_marginStart="14dp"
+        style="@style/BrilliantSelectText"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:ellipsize="marquee"
@@ -259,9 +290,12 @@
     <!-- ORIENTATION SECTION -->
     <TextView
         android:id="@+id/editOrientation_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_2sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/customctrl_orientation"
@@ -271,6 +305,7 @@
 
     <Spinner
         android:id="@+id/editOrientation_spinner"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:background="@android:color/transparent"
@@ -281,61 +316,65 @@
         app:layout_constraintTop_toBottomOf="@+id/editOrientation_textView" />
 
     <!-- TOGGLE SECTION -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxToggle"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/customctrl_toggle"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editOrientation_spinner"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/editOrientation_spinner" />
 
     <!-- MOUSE PASS THROUGH SECTION -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxPassThrough"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/customctrl_passthru"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxToggle"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/checkboxToggle" />
 
     <!-- SWIPEABLE BUTTON SECTION -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxSwipeable"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/customctrl_swipeable"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxPassThrough"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/checkboxPassThrough" />
 
     <!-- FORWARD LOCK SECTION -->
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxForwardLock"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/customctrl_forward_lock"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxSwipeable"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        app:layout_constraintTop_toBottomOf="@id/checkboxSwipeable" />
 
-    <Switch
+    <CheckBox
         android:id="@+id/checkboxAbsoluteFingerTracking"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_36sdp"
         android:text="@string/customctrl_absolute_tracking"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkboxForwardLock"
-        tools:ignore="UseSwitchCompatOrMaterialXml"/>
+        app:layout_constraintTop_toBottomOf="@id/checkboxForwardLock"/>
 
     <!-- BACKGROUND COLOR SECTION -->
     <fr.spse.extended_view.ExtendedTextView
         android:id="@+id/editBackgroundColor_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_35sdp"
         android:background="?attr/selectableItemBackground"
@@ -355,9 +394,12 @@
     <!-- STROKE WIDTH -->
     <TextView
         android:id="@+id/editStrokeWidth_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:paddingEnd="5dp"
         android:text="@string/customctrl_stroke_width"
@@ -368,6 +410,7 @@
 
     <SeekBar
         android:id="@+id/editStrokeWidth_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -390,6 +433,10 @@
     <!-- STROKE COLOR VERSION -->
     <fr.spse.extended_view.ExtendedTextView
         android:id="@+id/editStrokeColor_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_35sdp"
         android:background="?attr/selectableItemBackground"
@@ -408,6 +455,10 @@
     <!-- CORNER RADIUS SECTION -->
     <TextView
         android:id="@+id/editCornerRadius_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -420,6 +471,7 @@
 
     <SeekBar
         android:id="@+id/editCornerRadius_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -442,6 +494,10 @@
     <!-- BUTTON OPACITY SECTION -->
     <TextView
         android:id="@+id/editButtonOpacity_textView"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -454,6 +510,7 @@
 
     <SeekBar
         android:id="@+id/editButtonOpacity_seekbar"
+        android:layout_marginTop="6dp"
         android:layout_width="0dp"
         android:layout_height="@dimen/_36sdp"
 
@@ -475,6 +532,10 @@
     <!-- Button visibility -->
     <TextView
         android:id="@+id/visibility_textview"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/customctrl_visibility_title"
@@ -483,15 +544,17 @@
 
     <CheckBox
         android:id="@+id/visibility_game_checkbox"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
         android:text="@string/customctrl_visibility_ingame"
         app:layout_constraintTop_toBottomOf="@+id/visibility_textview" />
 
     <CheckBox
         android:id="@+id/visibility_menu_checkbox"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
         android:text="@string/customctrl_visibility_in_menus"
         app:layout_constraintTop_toBottomOf="@+id/visibility_game_checkbox" />
 

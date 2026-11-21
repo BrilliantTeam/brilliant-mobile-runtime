@@ -20,4 +20,30 @@
     <string name="brilliant_editor_new">新按钮</string>
     <string name="brilliant_hold_hint">长按才会触发这个按键</string>
     <string name="brilliant_open_folder_hint">找不到可以打开文件夹的 App。请打开系统的“文件”App，在侧边菜单找到“辉煌启动器”。</string>
+    <string name="brilliant_close">关闭</string>
+    <string name="brilliant_back">返回</string>
+    <string-array name="brilliant_key_words">
+        <item>无</item>
+        <item>返回键（Esc）</item>
+        <item>主屏幕键</item>
+        <item>方向键</item>
+        <item>左 %1$s</item>
+        <item>右 %1$s</item>
+        <item>数字键盘 %1$s</item>
+        <item>空格键</item>
+        <item>菜单键</item>
+    </string-array>
+    <string-array name="brilliant_special_keys">
+        <item>开关键盘</item>
+        <item>隐藏按键</item>
+        <item>鼠标左键</item>
+        <item>鼠标右键</item>
+        <item>切换鼠标</item>
+        <item>鼠标中键</item>
+        <item>滚轮向上</item>
+        <item>滚轮向下</item>
+        <item>游戏菜单</item>
+        <item>鼠标侧键（后退）</item>
+        <item>鼠标侧键（前进）</item>
+    </string-array>
 </resources>

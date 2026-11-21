@@ -16,7 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Switch;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.kdt.SideDialogView;
@@ -28,6 +28,7 @@ import net.kdt.pojavlaunch.colorselector.ColorSelector;
 import net.kdt.pojavlaunch.customcontrols.ControlData;
 import net.kdt.pojavlaunch.customcontrols.ControlDrawerData;
 import net.kdt.pojavlaunch.customcontrols.ControlJoystickData;
+import net.kdt.pojavlaunch.customcontrols.ControlLayout;
 import net.kdt.pojavlaunch.customcontrols.buttons.ControlDrawer;
 import net.kdt.pojavlaunch.customcontrols.buttons.ControlInterface;
 import net.kdt.pojavlaunch.utils.interfaces.SimpleItemSelectedListener;
@@ -61,7 +62,7 @@ public class EditControlSideDialog extends SideDialogView {
     };
     private EditText mNameEditText, mWidthEditText, mHeightEditText;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch mToggleSwitch, mPassthroughSwitch, mSwipeableSwitch, mForwardLockSwitch, mAbsoluteTrackingSwitch;
+    private CheckBox mToggleSwitch, mPassthroughSwitch, mSwipeableSwitch, mForwardLockSwitch, mAbsoluteTrackingSwitch;
     private Spinner mOrientationSpinner;
     private final TextView[] mKeycodeTextviews = new TextView[4];
     private SeekBar mStrokeWidthSeekbar, mCornerRadiusSeekbar, mAlphaSeekbar;
@@ -263,11 +264,11 @@ public class EditControlSideDialog extends SideDialogView {
     private void loadAdapter() {
         //Initialize adapter for keycodes
         mAdapter = new ArrayAdapter<>(mDialogContent.getContext(), R.layout.item_centered_textview);
-        mSpecialArray = ControlData.buildSpecialButtonArray();
+        mSpecialArray = ControlData.buildSpecialButtonArray(mDialogContent.getContext());
 
         mAdapter.addAll(mSpecialArray);
-        mAdapter.addAll(EfficientAndroidLWJGLKeycode.generateKeyName());
-        mAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        mAdapter.addAll(EfficientAndroidLWJGLKeycode.generateKeyName(mDialogContent.getContext()));
+        mAdapter.setDropDownViewResource(R.layout.brilliant_menu_item);
 
         for (Spinner spinner : mKeycodeSpinners) {
             spinner.setAdapter(mAdapter);
@@ -450,11 +451,13 @@ public class EditControlSideDialog extends SideDialogView {
         mDisplayInGameCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (internalChanges) return;
             mCurrentlyEditedButton.getProperties().displayInGame = isChecked;
+            if (mParent instanceof ControlLayout) ((ControlLayout) mParent).applyEditorFilter(mCurrentlyEditedButton);
         });
 
         mDisplayInMenuCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (internalChanges) return;
             mCurrentlyEditedButton.getProperties().displayInMenu = isChecked;
+            if (mParent instanceof ControlLayout) ((ControlLayout) mParent).applyEditorFilter(mCurrentlyEditedButton);
         });
 
         mSelectStrokeColor.setOnClickListener(v -> {

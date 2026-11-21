@@ -193,11 +193,13 @@ public class ControlData {
         return SPECIAL_BUTTONS;
     }
 
-    public static List<String> buildSpecialButtonArray() {
+    public static List<String> buildSpecialButtonArray(android.content.Context context) {
         if (SPECIAL_BUTTON_NAME_ARRAY == null) {
+            String[] labels = context.getResources().getStringArray(net.kdt.pojavlaunch.R.array.brilliant_special_keys);
             List<String> nameList = new ArrayList<>();
-            for (ControlData btn : getSpecialButtons()) {
-                nameList.add("SPECIAL_" + btn.name);
+            ControlData[] buttons = getSpecialButtons();
+            for (int i = 0; i < buttons.length; i++) {
+                nameList.add(i < labels.length ? labels[i] : buttons[i].name);
             }
             SPECIAL_BUTTON_NAME_ARRAY = nameList;
             Collections.reverse(SPECIAL_BUTTON_NAME_ARRAY);
