@@ -37,7 +37,8 @@ public class CloneButton extends Button implements ActionButtonInterface {
     public void onClick() {
         if(mCurrentlySelectedButton == null) return;
 
-        mCurrentlySelectedButton.cloneButton();
-        mCurrentlySelectedButton.getControlLayoutParent().removeEditWindow();
+        ControlInterface source = mCurrentlySelectedButton;
+        source.getControlLayoutParent().removeEditWindow();
+        source.getControlLayoutParent().cloneAndEdit(source);
     }
 }

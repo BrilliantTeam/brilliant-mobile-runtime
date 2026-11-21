@@ -65,7 +65,9 @@ public class TouchCharInput extends androidx.appcompat.widget.AppCompatEditText 
      * Toggle on and off the soft keyboard, depending of the state
      */
     public void switchKeyboardState(){
-        if(hasFocus()){
+        androidx.core.view.WindowInsetsCompat insets = androidx.core.view.ViewCompat.getRootWindowInsets(this);
+        boolean imeVisible = insets != null && insets.isVisible(androidx.core.view.WindowInsetsCompat.Type.ime());
+        if(hasFocus() && imeVisible){
             clear();
             disable();
         }else{

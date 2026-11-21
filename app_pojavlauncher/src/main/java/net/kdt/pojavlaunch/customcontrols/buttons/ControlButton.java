@@ -155,8 +155,7 @@ public class ControlButton extends TextView implements ControlInterface {
     /** Add another instance of the ControlButton to the parent layout */
     public void cloneButton(){
         ControlData cloneData = new ControlData(getProperties());
-        cloneData.dynamicX = "0.5 * ${screen_width}";
-        cloneData.dynamicY = "0.5 * ${screen_height}";
+        ControlInterface.placeBeside(this, cloneData);
         ((ControlLayout) getParent()).addControlButton(cloneData);
     }
 

@@ -85,6 +85,12 @@ public class ActionRow extends LinearLayout {
     }
 
     public void setFollowedButton(ControlInterface controlInterface){
+        if(controlInterface == null) {
+            hide();
+            mFollowedView = null;
+            for(ActionButtonInterface buttonInterface: actionButtons) buttonInterface.setFollowedView(null);
+            return;
+        }
         if(mFollowedView != null)
             mFollowedView.getViewTreeObserver().removeOnPreDrawListener(mFollowedViewListener);
 

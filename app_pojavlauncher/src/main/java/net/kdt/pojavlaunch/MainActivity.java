@@ -292,6 +292,8 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
                 }
             };
             gameActionClickListener = (parent, view, position, id) -> {
+                if (position != 3 && mQuickSettingSideDialog != null && mQuickSettingSideDialog.isDisplaying()) mQuickSettingSideDialog.cancel();
+                if (position != 1 && loggerView.getVisibility() == View.VISIBLE) loggerView.setVisibility(View.GONE);
                 switch(position) {
                     case 0: dialogForceClose(MainActivity.this); break;
                     case 1: openLogOutput(); break;

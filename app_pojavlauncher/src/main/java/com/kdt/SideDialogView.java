@@ -164,7 +164,7 @@ public abstract class SideDialogView {
         Tools.runOnUiThread(() -> {
             if (fromRight) {
                 if (!mDisplaying || !isAtRight()) {
-                    mSideDialogAnimator.setFloatValues(currentDisplayMetrics.widthPixels, currentDisplayMetrics.widthPixels - mScrollView.getWidth() - mMargin);
+                    mSideDialogAnimator.setFloatValues(parentWidth(), parentWidth() - mScrollView.getWidth() - mMargin);
                     mSideDialogAnimator.start();
                     mDisplaying = true;
                 }
@@ -179,7 +179,11 @@ public abstract class SideDialogView {
     }
 
     protected final boolean isAtRight() {
-        return mDialogLayout.getX() > currentDisplayMetrics.widthPixels / 2f;
+        return mDialogLayout.getX() > parentWidth() / 2f;
+    }
+
+    private int parentWidth() {
+        return mParent.getWidth() > 0 ? mParent.getWidth() : currentDisplayMetrics.widthPixels;
     }
 
     /**
@@ -205,7 +209,7 @@ public abstract class SideDialogView {
 
         mDisplaying = false;
         if (isAtRight())
-            mSideDialogAnimator.setFloatValues(currentDisplayMetrics.widthPixels - mDialogLayout.getWidth() - mMargin, currentDisplayMetrics.widthPixels);
+            mSideDialogAnimator.setFloatValues(parentWidth() - mDialogLayout.getWidth() - mMargin, parentWidth());
         else
             mSideDialogAnimator.setFloatValues(mMargin, -mDialogLayout.getWidth());
 
@@ -215,7 +219,8 @@ public abstract class SideDialogView {
             mSideDialogAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    deflateLayout();
+                    mSideDialogAnimator.removeListener(this);
+                    if (!mDisplaying) deflateLayout();
                 }
             });
         }

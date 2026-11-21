@@ -479,10 +479,21 @@ public class ControlLayout extends FrameLayout {
 	public void editNewest() {
 		List<ControlInterface> buttons = getButtonChildren();
 		if (buttons.isEmpty()) return;
-		ControlInterface newest = buttons.get(buttons.size() - 1);
+		editLater(buttons.get(buttons.size() - 1));
+	}
+
+	public void cloneAndEdit(ControlInterface source) {
+		int before = getButtonChildren().size();
+		source.cloneButton();
+		applyEditorFilter(null);
+		List<ControlInterface> buttons = getButtonChildren();
+		if (buttons.size() > before) editLater(buttons.get(before));
+	}
+
+	private void editLater(ControlInterface button) {
 		post(() -> {
-			editControlButton(newest);
-			mActionRow.setFollowedButton(newest);
+			editControlButton(button);
+			mActionRow.setFollowedButton(button);
 		});
 	}
 

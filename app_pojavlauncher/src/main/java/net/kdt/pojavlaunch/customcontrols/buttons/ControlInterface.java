@@ -54,6 +54,18 @@ public interface ControlInterface extends View.OnLongClickListener, GrabListener
         getControlView().setVisibility(isVisible ? VISIBLE : GONE);
     }
 
+    static void placeBeside(ControlInterface source, ControlData copy) {
+        View view = source.getControlView();
+        View parent = (View) view.getParent();
+        float offset = net.kdt.pojavlaunch.Tools.dpToPx(24);
+        float x = view.getX() + offset;
+        float y = view.getY() + offset;
+        if (parent != null && x + view.getWidth() > parent.getWidth()) x = view.getX() - offset;
+        if (parent != null && y + view.getHeight() > parent.getHeight()) y = view.getY() - offset;
+        copy.dynamicX = Float.toString(Math.max(0, x));
+        copy.dynamicY = Float.toString(Math.max(0, y));
+    }
+
     default void updateVisibility(boolean isGrabbing, boolean controlsShown) {
         ControlData properties = getProperties();
         boolean inContext = (properties.displayInGame && isGrabbing) || (properties.displayInMenu && !isGrabbing);

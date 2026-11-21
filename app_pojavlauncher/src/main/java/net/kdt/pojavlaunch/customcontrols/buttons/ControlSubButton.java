@@ -66,8 +66,7 @@ public class ControlSubButton extends ControlButton {
     @Override
     public void cloneButton() {
         ControlData cloneData = new ControlData(getProperties());
-        cloneData.dynamicX = "0.5 * ${screen_width}";
-        cloneData.dynamicY = "0.5 * ${screen_height}";
+        ControlInterface.placeBeside(this, cloneData);
         ((ControlLayout) getParent()).addSubButton(parentDrawer, cloneData);
     }
 
