@@ -98,11 +98,13 @@ public class TouchCharInput extends androidx.appcompat.widget.AppCompatEditText 
         }
         // Allow, regardless of whether or not a hardware keyboard is declared
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
         setEnabled(true);
         setFocusable(true);
         setVisibility(VISIBLE);
         requestFocus();
+        post(() -> {
+            if (hasFocus()) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+        });
     }
 
     /** Lose ability to exist, take focus and have some text being input */
